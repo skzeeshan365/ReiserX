@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "145231816902",
+    "project_id": "testtrace-941f7",
+    "storage_bucket": "testtrace-941f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145231816902:android:a81f8f01d2df79de254fc7",
+        "android_client_info": {
+          "package_name": "com.reiserx.testtrace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145231816902-760c2cg4dt6ug1i319chrqdehgnq8249.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuMuea9VXOZ7-Q77_zWnghzqJ2TJswbf0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145231816902-760c2cg4dt6ug1i319chrqdehgnq8249.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

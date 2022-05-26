@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ReiserX</string>
+    <string name="Test">default_notification_channel_id</string>
+    <string name="Login">Login</string>
+    <string name="msg">Scan this QR code or enter the device code to add this device to your account</string>
+    <string name="textDemo">Done</string>
+
+    <string name="device_description">Disable the Force Stop button using Device Policy Manager API</string>
+    <string name="device_admin_label">ReiserX</string>
+</resources>
