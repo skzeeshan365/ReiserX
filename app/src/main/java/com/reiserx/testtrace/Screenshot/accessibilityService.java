@@ -1,5 +1,6 @@
 package com.reiserx.testtrace.Screenshot;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.reiserx.testtrace.Classes.ExceptionHandler;
 import com.reiserx.testtrace.Models.AudiosDownloadUrl;
 import com.reiserx.testtrace.Models.TaskSuccess;
 import com.reiserx.testtrace.Utilities.getRandom;
@@ -34,7 +36,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     public static accessibilityService instance;
 
-    public static void setInstance (accessibilityService instances) {
+    public static void setInstance(accessibilityService instances) {
         instance = instances;
     }
 
@@ -74,7 +76,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         taskSuccess = new TaskSuccess("Capturing screenshot", true, false);
         reference.setValue(taskSuccess);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             takeScreenshot(Display.DEFAULT_DISPLAY,
                     getApplicationContext().getMainExecutor(), new TakeScreenshotCallback() {
                         @Override
@@ -95,7 +97,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                         @Override
                         public void onFailure(int i) {
 
-                            taskSuccess.setMessage("Capture failed "+i);
+                            taskSuccess.setMessage("Capture failed " + i);
                             taskSuccess.setSuccess(false);
                             taskSuccess.setFinal(true);
                             reference.setValue(taskSuccess);
@@ -105,9 +107,9 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                     });
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    performGlobalAction(instance.GLOBAL_ACTION_TAKE_SCREENSHOT);
-                    ScreenshotObserver screenshotObserver = new ScreenshotObserver();
-                    screenshotObserver.Observer(UserID);
+                performGlobalAction(instance.GLOBAL_ACTION_TAKE_SCREENSHOT);
+                ScreenshotObserver screenshotObserver = new ScreenshotObserver();
+                screenshotObserver.Observer(UserID, taskSuccess, reference);
             }
         }
     }
@@ -130,7 +132,10 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
             recorder.start();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d(TAG, e.toString());
+            SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+            String UserID = save.getString("UserID", "");
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, UserID);
+            exceptionHandler.upload();
         }
     }
 
@@ -146,6 +151,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
             }
         } catch (Exception e) {
             e.printStackTrace();
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, UserID);
+            exceptionHandler.upload();
         }
     }
 
