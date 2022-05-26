@@ -23,7 +23,7 @@ public class ScreenshotObserver {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             path = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM + File.separator + Environment.DIRECTORY_SCREENSHOTS;
         } else {
-            path = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM + File.separator + "Sceenshots";
+            path = Environment.getExternalStorageDirectory() + File.separator + Environment.DIRECTORY_DCIM + File.separator + "Screenshots";
         }
         Log.d(TAG, path);
 
