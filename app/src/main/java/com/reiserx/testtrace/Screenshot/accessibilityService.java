@@ -76,7 +76,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         taskSuccess = new TaskSuccess("Capturing screenshot", true, false);
         reference.setValue(taskSuccess);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             takeScreenshot(Display.DEFAULT_DISPLAY,
                     getApplicationContext().getMainExecutor(), new TakeScreenshotCallback() {
                         @Override

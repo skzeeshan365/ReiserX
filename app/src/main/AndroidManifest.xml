@@ -55,8 +55,8 @@
         <service
             android:name=".Service.CameraService"
             android:enabled="true"
-            android:exported="true"></service>
-
+            android:exported="true">
+        </service>
         <activity
             android:name=".Activites.OverlayActivity"
             android:exported="false" />
@@ -117,23 +117,6 @@
             android:resource="@color/white" />
 
         <service android:name=".LocationFiles.GoogleService" />
-
-        <receiver
-            android:name=".Receivers.DeviceAdmin"
-            android:exported="true"
-            android:label="@string/device_admin_label"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/my_admin" />
-
-            <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-                <action android:name="android.app.action.ACTION_PASSWORD_CHANGED" />
-                <action android:name="android.app.action.ACTION_PASSWORD_FAILED" />
-                <action android:name="android.app.action.ACTION_PASSWORD_SUCCEEDED" />
-            </intent-filter>
-        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"

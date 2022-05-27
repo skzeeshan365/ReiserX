@@ -15,7 +15,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -63,7 +62,6 @@ import com.reiserx.testtrace.Models.updateAppss;
 import com.reiserx.testtrace.NotificationClasses.NotificationService;
 import com.reiserx.testtrace.NotificationClasses.getListOfApps;
 import com.reiserx.testtrace.R;
-import com.reiserx.testtrace.Receivers.DeviceAdmin;
 import com.reiserx.testtrace.Service.MakeMyToast;
 import com.reiserx.testtrace.Service.RestartService;
 import com.reiserx.testtrace.Utilities.generateKey;
@@ -144,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.setData(Uri.parse("package:" + packageName));
                 startActivity(intent);
             }
-
-            deviceAdmin();
 
             ComponentName cn = new ComponentName(this, NotificationService.class);
             String flat = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
@@ -422,25 +418,6 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public void deviceAdmin() {
-        try {
-            // Initiate DevicePolicyManager.
-            DevicePolicyManager mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-            // Set DeviceAdminDemo Receiver for active the component with different option
-            ComponentName mAdminName = new ComponentName(this, DeviceAdmin.class);
-
-            if (!mDPM.isAdminActive(mAdminName)) {
-                // try to become active
-                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to secure your application.");
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -559,4 +536,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+
 }
