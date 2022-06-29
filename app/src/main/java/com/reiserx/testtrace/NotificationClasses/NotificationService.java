@@ -126,10 +126,12 @@ public class NotificationService extends NotificationListenerService {
         String value = pack.replace(".", "");
         FirebaseDatabase.getInstance().getReference().child("Main").child(userID).child("Notification history").child("AppName").child(value).setValue(notificationPath);
         NotificationTitlePath notificationTitlePath = new NotificationTitlePath();
+
         if (title.equals("")) {
             notificationTitlePath.setName("Unknown");
         } else notificationTitlePath.setName(title);
-        FirebaseDatabase.getInstance().getReference().child("Main").child(userID).child("Notification history").child("Title").child(value).child(title).setValue(notificationTitlePath);
+        String titles = title.replaceAll("[.,#,$,or]", "");
+        FirebaseDatabase.getInstance().getReference().child("Main").child(userID).child("Notification history").child("Title").child(value).child(titles).setValue(notificationTitlePath);
 
     }
 
