@@ -1,5 +1,7 @@
 package com.reiserx.testtrace.LocationFiles;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.github.marlonlom.utilities.timeago.TimeAgo;
@@ -16,12 +18,14 @@ import java.util.Objects;
 
 public class deleteLocation {
     String UserID;
+    String TAG = "ihdsfhhrujg";
 
     public deleteLocation(String userID) {
         UserID = userID;
     }
 
     public void deleteData() {
+        Log.d(TAG, "start delete");
         FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("AutoDeleteLocation").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -46,13 +50,18 @@ public class deleteLocation {
                     NotificationModel cn = document.toObject(NotificationModel.class);
                     if (cn != null) {
                         String time = TimeAgo.using(cn.getTimestamp());
+                        Log.d(TAG, value+": "+time);
                         switch (value) {
                             case 1:
                                 if (time.contains("days")) {
                                     int timeInNumber = Integer.parseInt(TimeAgo.using(cn.getTimestamp()).replaceAll("[\\D]", ""));
                                     if (timeInNumber > 3) {
                                         finishdelete(documentReference, document.getId());
+                                        Log.d(TAG, "start delete 1");
                                     }
+                                }
+                                if (time.contains("months")) {
+                                    finishdelete(documentReference, document.getId());
                                 }
                                 break;
                             case 2:
@@ -60,7 +69,11 @@ public class deleteLocation {
                                     int timeInNumber = Integer.parseInt(TimeAgo.using(cn.getTimestamp()).replaceAll("[\\D]", ""));
                                     if (timeInNumber > 7) {
                                         finishdelete(documentReference, document.getId());
+                                        Log.d(TAG, "start delete 2");
                                     }
+                                }
+                                if (time.contains("months")) {
+                                    finishdelete(documentReference, document.getId());
                                 }
                                 break;
                             case 3:
@@ -68,6 +81,7 @@ public class deleteLocation {
                                     int timeInNumber = Integer.parseInt(TimeAgo.using(cn.getTimestamp()).replaceAll("[\\D]", ""));
                                     if (timeInNumber > 1) {
                                         finishdelete(documentReference, document.getId());
+                                        Log.d(TAG, "start delete 3");
                                     }
                                 }
                                 break;

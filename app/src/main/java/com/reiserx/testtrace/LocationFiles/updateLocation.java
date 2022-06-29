@@ -14,7 +14,6 @@ import com.reiserx.testtrace.Models.locationModel;
 public class updateLocation {
 
     public void update(locationModel locationModel, String UserID, Context context, FirebaseFirestore firestore) {
-
         SharedPreferences periodic = context.getSharedPreferences("loc", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = periodic.edit();
         Log.d("LocationsUpdates", "updatelocation");

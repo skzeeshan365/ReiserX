@@ -147,6 +147,9 @@ public class GoogleService extends Service implements LocationListener{
 
     private void fn_update(Location location){
 
+        deleteLocation deleteLocation = new deleteLocation(userID);
+        deleteLocation.deleteData();
+
         Calendar cal = Calendar.getInstance();
         long currentTime = cal.getTimeInMillis();
         locationModel locationModel = new locationModel(location.getLongitude()+"", location.getLatitude()+"", currentTime);
