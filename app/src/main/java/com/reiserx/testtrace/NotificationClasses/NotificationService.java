@@ -163,6 +163,7 @@ public class NotificationService extends NotificationListenerService {
                 Intent intentone = new Intent(getApplicationContext(), MainActivity.class);
                 intentone.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intentone);
+                cancelNotification(sbn.getKey());
             }
         }
     }
