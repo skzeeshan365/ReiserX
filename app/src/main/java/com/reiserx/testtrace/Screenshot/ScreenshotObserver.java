@@ -64,6 +64,7 @@ public class ScreenshotObserver {
                                 taskSuccess.setFinal(true);
                                 references.setValue(taskSuccess);
                             });
+                            file.delete();
                         });
                     } else {
                         Log.d(TAG, task.getException().toString());

