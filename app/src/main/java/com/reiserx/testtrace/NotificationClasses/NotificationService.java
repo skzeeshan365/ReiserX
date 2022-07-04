@@ -43,7 +43,6 @@ public class NotificationService extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         SharedPreferences save = context.getSharedPreferences("users", MODE_PRIVATE);
         String userID = save.getString("UserID", "");
-        Log.d(TAG, "posted");
         try {
         firestore = FirebaseFirestore.getInstance();
         if (sbn != null) {
