@@ -20,7 +20,7 @@ public class uploadFiles {
         this.context = context;
     }
 
-    public void uploadFiles(FirebaseDatabase mdb, FirebaseStorage storage, String folder, String userID, int requestCode) {
+    public void uploadFile(FirebaseDatabase mdb, FirebaseStorage storage, String folder, String userID, int requestCode) {
         try {
 
         uploadImageFiles uploadImageFiles = new uploadImageFiles(context);
@@ -54,9 +54,6 @@ public class uploadFiles {
                 }
             }
         }
-        imageFiles=null;
-        files=null;
-        path=null;
         } catch(Exception e) {
             ExceptionHandler exceptionHandler = new ExceptionHandler(e, userID);
             exceptionHandler.upload();
@@ -93,7 +90,6 @@ public class uploadFiles {
                         uploadPdfFiles.uploadPdfFile(mdb, storage, fileName, userID, file.getName(), file, audioProg);
                     }
             }
-            path=null;
         } catch(Exception e) {
             ExceptionHandler exceptionHandler = new ExceptionHandler(e, userID);
             exceptionHandler.upload();

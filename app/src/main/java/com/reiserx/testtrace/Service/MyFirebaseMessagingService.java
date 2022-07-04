@@ -2,7 +2,6 @@ package com.reiserx.testtrace.Service;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -19,7 +18,7 @@ import java.util.Objects;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    String TAG = "hsbfusdgfbyu";
+
 
     NotificationUtils notificationUtils;
 
@@ -42,7 +41,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String title = data.get("title");
         String content = data.get("content");
         String id = data.get("id");
-        Log.d(TAG, data.get("requestCode"));
         switch (Integer.parseInt(Objects.requireNonNull(data.get("requestCode")))) {
             case 6:
                 notificationUtils = new NotificationUtils();

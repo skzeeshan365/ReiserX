@@ -3,7 +3,6 @@ package com.reiserx.testtrace.Classes;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
@@ -38,7 +37,6 @@ public class downloadFiles {
 
         executor.execute(() -> {
                 try {
-                    Log.d("hgvhbjhj", "downloading...");
                     URL u = new URL(url);
                     URLConnection conn = u.openConnection();
                     int contentLength = conn.getContentLength();
@@ -57,7 +55,6 @@ public class downloadFiles {
                     return; // swallow a 404
             } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d("hgvhbjhj", e.toString());
                 }
             handler.post(() -> {
                 if (outputFile.exists()) {

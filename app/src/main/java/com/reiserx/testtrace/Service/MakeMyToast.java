@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.reiserx.testtrace.BuildConfig;
 import com.reiserx.testtrace.Classes.ExceptionHandler;
 import com.reiserx.testtrace.Classes.checkDatabase;
 import com.reiserx.testtrace.LocationFiles.periodicLocation;
@@ -39,10 +40,10 @@ import java.util.Calendar;
 public class MakeMyToast extends Service {
 
     public boolean ServiceStatus = false;
-    String tag = "fvfdvfvfdbfdbdfbdfbdf";
-    String TAG = "hghbjhgyugyg";
     ValueEventListener SERVICE_STATUS_LISTENER;
     ValueEventListener TASK_LISTENER;
+
+    String TAG = "MakeMyToastService";
 
     @Override
     public void onCreate() {
@@ -54,7 +55,6 @@ public class MakeMyToast extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onStart");
 
         if (getMemory()) {
             //Firebase initialization
@@ -105,6 +105,7 @@ public class MakeMyToast extends Service {
                                     getCurrentTask getCurrentTask = new getCurrentTask(MakeMyToast.this);
                                     DatabaseReference currentTask = mdb.getReference("Main").child(userID).child("ServiceStatus").child("Current task");
                                     currentTask.setValue(String.valueOf(getCurrentTask.get()));
+                                    mdb.getReference("Main").child(userID).child("ServiceStatus").child("version").setValue(BuildConfig.VERSION_NAME);
                                     DatabaseReference taskRef = mdb.getReference("Main").child(userID).child("Task");
 
                                     downloadFiles(userID);
@@ -201,10 +202,9 @@ public class MakeMyToast extends Service {
             case ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL:
 
                 updateStatus();
-                Log.d(tag, "low");
+                Log.d(TAG, "low");
                 Intent in = new Intent(this, MakeMyToast.class);
                 this.stopService(in);
-                in = null;
 
                 /*
                    Release any memory that your app doesn't need to run.
@@ -222,7 +222,7 @@ public class MakeMyToast extends Service {
             case ComponentCallbacks2.TRIM_MEMORY_COMPLETE:
 
                 updateStatus();
-                Log.d(tag, "high");
+                Log.d(TAG, "high");
                 Intent ins = new Intent(this, MakeMyToast.class);
                 this.stopService(ins);
 
@@ -262,7 +262,7 @@ public class MakeMyToast extends Service {
         if (getMemory()) {
         } else {
             updateStatus();
-            Log.d(tag, "onLowMemory");
+            Log.d(TAG, "onLowMemory");
             Intent in = new Intent(this, MakeMyToast.class);
             this.stopService(in);
         }
@@ -280,8 +280,6 @@ public class MakeMyToast extends Service {
                 .addOnSuccessListener(aVoid -> {
                 });
         mdb.getReference("Main").child(save.getString("UserID", "")).child("ServiceStatus").child("CommandStatus").setValue(false);
-        mdb = null;
-        save = null;
     }
 
     public Boolean getMemory() {
@@ -314,7 +312,7 @@ public class MakeMyToast extends Service {
         mdb.getReference("Main").child(userID).child("ServiceStatus").child("Offline")
                 .setValue(currentTime)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(tag, "onDestroy");
+                    Log.d(TAG, "onDestroy");
                     sendBroadcast(new Intent("AlarmService"));
                     AlarmReceiver alarm = new AlarmReceiver();
                     alarm.setAlarm(this);

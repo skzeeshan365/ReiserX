@@ -36,12 +36,14 @@ public class NotificationService extends NotificationListenerService {
         super.onCreate();
         context = getApplicationContext();
         FirstLaunch();
+        Log.d(TAG, "created");
     }
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         SharedPreferences save = context.getSharedPreferences("users", MODE_PRIVATE);
         String userID = save.getString("UserID", "");
+        Log.d(TAG, "posted");
         try {
         firestore = FirebaseFirestore.getInstance();
         if (sbn != null) {
@@ -148,6 +150,7 @@ public class NotificationService extends NotificationListenerService {
 
     public void StartApp (StatusBarNotification sbn) {
 
+        Log.d(TAG, "run");
         if (!Settings.canDrawOverlays(this)) {
             NotificationUtils notificationUtils = new NotificationUtils();
             notificationUtils.alertWindowPermission(this, "App start failed", "Please grant SYSTEM_ALERT_WINDOW permission, click to grant", 365);

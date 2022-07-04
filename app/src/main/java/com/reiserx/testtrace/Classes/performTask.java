@@ -4,7 +4,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.reiserx.testtrace.Models.Task;
 
 public class performTask {
-    private FirebaseDatabase database;
     String path, subPath;
     int requestCode;
     String UserID;
@@ -16,15 +15,8 @@ public class performTask {
         UserID = userID;
     }
 
-    public performTask(String path, String subPath, int requestCode, String userID) {
-        this.path = path;
-        this.requestCode = requestCode;
-        UserID = userID;
-        this.subPath = subPath;
-    }
-
     public void Task() {
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         if (subPath!=null) {
             task = new Task(path, subPath, requestCode);
         } else {

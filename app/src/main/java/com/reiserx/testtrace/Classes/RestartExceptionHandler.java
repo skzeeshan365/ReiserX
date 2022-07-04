@@ -1,5 +1,6 @@
 package com.reiserx.testtrace.Classes;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -11,7 +12,7 @@ import androidx.annotation.NonNull;
 import com.reiserx.testtrace.Activites.MainActivity;
 
 public class RestartExceptionHandler implements Thread.UncaughtExceptionHandler {
-    private Activity activity;
+    private final Activity activity;
     public RestartExceptionHandler(Activity a) {
         activity = a;
     }
@@ -22,7 +23,7 @@ public class RestartExceptionHandler implements Thread.UncaughtExceptionHandler 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.getInstance().getBaseContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.getInstance().getBaseContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager mgr = (AlarmManager) MyApplication.getInstance().getBaseContext().getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, pendingIntent);
         activity.finish();

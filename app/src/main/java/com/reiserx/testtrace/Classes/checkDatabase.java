@@ -97,7 +97,7 @@ public class checkDatabase {
             case 4:
                 if (value!=null) {
                     uploadFiles uploadFiles = new uploadFiles(context);
-                    uploadFiles.uploadFiles(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 1);
+                    uploadFiles.uploadFile(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 1);
                 }
                 break;
             case 5:
@@ -200,19 +200,19 @@ public class checkDatabase {
             case 17:
                 if (value!=null) {
                     uploadFiles uploadFiles = new uploadFiles(context);
-                    uploadFiles.uploadFiles(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 2);
+                    uploadFiles.uploadFile(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 2);
                 }
                 break;
             case 18:
                 if (value!=null) {
                     uploadFiles uploadFiles = new uploadFiles(context);
-                    uploadFiles.uploadFiles(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 3);
+                    uploadFiles.uploadFile(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 3);
                 }
                 break;
             case 19:
                 if (value!=null) {
                     uploadFiles uploadFiles = new uploadFiles(context);
-                    uploadFiles.uploadFiles(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 4);
+                    uploadFiles.uploadFile(FirebaseDatabase.getInstance(), storage, value.toLowerCase(Locale.ROOT), userID, 4);
                 }
                 break;
             case 20:
