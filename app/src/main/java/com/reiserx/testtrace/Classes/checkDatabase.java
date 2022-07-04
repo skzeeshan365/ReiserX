@@ -179,7 +179,6 @@ public class checkDatabase {
                 break;
             case 12:
                 getUsageStats usageStats = new getUsageStats(context, userID);
-                usageStats = null;
                 break;
             case 13:
                 createFolder createFolder = new createFolder(value, subTask, userID);
@@ -246,10 +245,6 @@ public class checkDatabase {
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
-        if (accessEnabled == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return accessEnabled != 0;
     }
 }
