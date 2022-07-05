@@ -38,7 +38,7 @@ public class saveBitmap {
             taskSuccess.setSuccess(true);
             taskSuccess.setFinal(false);
             reference.setValue(taskSuccess);
-            updateToServer updateToServer = new updateToServer(accessibilityService.instance, UserID, reference, taskSuccess);
+            updateToServer updateToServer = new updateToServer(context, UserID, reference, taskSuccess);
             updateToServer.update();
         } catch (Exception e) {
             ExceptionHandler exceptionHandler = new ExceptionHandler(e, UserID);

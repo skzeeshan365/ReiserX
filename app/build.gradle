@@ -14,8 +14,8 @@ android {
         applicationId "com.reiserx.testtrace"
         minSdk 23
         targetSdk 31
-        versionCode 25
-        versionName "3.4"
+        versionCode 27
+        versionName "3.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
