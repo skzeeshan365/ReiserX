@@ -45,7 +45,9 @@ public class deleteNotification {
                                             NotificationTitlePath notificationTitlePath = snapshot1.getValue(NotificationTitlePath.class);
                                             if (notificationTitlePath != null) {
                                                 String refdelete = "Main/" + UserID + "/Notification history/Title/" + value + "/" +notificationTitlePath.getName();
-                                                initiateDelete(u.getName(), notificationTitlePath.getName(), refdelete);
+                                                String ref1 = refdelete.replaceAll("[.,#,$,or]", "");
+                                                String titles = notificationTitlePath.getName().replaceAll("[.,#,$,or]", "");
+                                                initiateDelete(u.getName(), titles, ref1);
                                             }
                                         }
                                     }
