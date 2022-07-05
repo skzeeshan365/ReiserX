@@ -2,6 +2,7 @@ package com.reiserx.testtrace.Service;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -22,6 +23,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     NotificationUtils notificationUtils;
 
+    String TAG = "FCMMessage";
+
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
@@ -41,7 +44,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String title = data.get("title");
         String content = data.get("content");
         String id = data.get("id");
+            Log.d(TAG, title);
+            Log.d(TAG, data.get("requestCode"));
         switch (Integer.parseInt(Objects.requireNonNull(data.get("requestCode")))) {
+            case 7:
+                notificationUtils = new NotificationUtils();
+                notificationUtils.silentNotification(this, title, content, Integer.parseInt(Objects.requireNonNull(id)));
+                break;
             case 6:
                 notificationUtils = new NotificationUtils();
                 if (id != null) {

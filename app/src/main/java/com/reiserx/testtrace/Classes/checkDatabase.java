@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,7 +27,6 @@ import com.reiserx.testtrace.Operations.getCallLogs;
 import com.reiserx.testtrace.Operations.getContactLists;
 import com.reiserx.testtrace.Operations.getListOfFolder;
 import com.reiserx.testtrace.Operations.getUsageStats;
-import com.reiserx.testtrace.Screenshot.accessibilityService;
 import com.reiserx.testtrace.Service.CameraService;
 
 import java.util.ArrayList;
@@ -185,12 +182,10 @@ public class checkDatabase {
                 createFolder.create();
                 break;
             case 14:
-                accessibilityService.instance.takeScreenshots(userID);
+                //Vacant
                 break;
             case 15:
-                final Handler handler = new Handler(Looper.getMainLooper());
-                accessibilityService.instance.startRecording();
-                handler.postDelayed(() -> accessibilityService.instance.stopRecording(userID), Long.parseLong(value));
+                //Vacant
                 break;
             case 16:
                 if(!checkAccessibilityPermission()){

