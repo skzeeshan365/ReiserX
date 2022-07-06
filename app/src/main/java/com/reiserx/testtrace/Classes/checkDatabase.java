@@ -245,6 +245,7 @@ public class checkDatabase {
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
-        return accessEnabled != 0;
+        if (accessEnabled != 0) return true;
+        else return false;
     }
 }

@@ -524,6 +524,7 @@ public class MainActivity extends AppCompatActivity {
             accessEnabled = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
+            Log.d(TAG, e.toString());
         }
         if (accessEnabled == 0) {
             // if not construct intent to request permission
@@ -531,8 +532,10 @@ public class MainActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             // request permission via start activity for result
             startActivity(intent);
+            Log.d(TAG, "start 1");
             return false;
         } else {
+            Log.d(TAG, "start 2");
             return true;
         }
     }

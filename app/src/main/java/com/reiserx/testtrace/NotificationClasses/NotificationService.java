@@ -31,6 +31,8 @@ public class NotificationService extends NotificationListenerService {
     String text;
     long time;
 
+    String insta;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -111,6 +113,14 @@ public class NotificationService extends NotificationListenerService {
                             updadeWhatSappNotification(userID, title, text, pack, ticker, label);
                         }
                     }
+                }
+            } else if (pack.equals("com.instagram.android")) {
+                if (insta == null) {
+                    update(pack, ticker, text, time, userID, label);
+                    insta = title;
+                } else if (insta != title) {
+                    update(pack, ticker, text, time, userID, label);
+                    insta = title;
                 }
             } else {
                 update(pack, ticker, text, time, userID, label);
