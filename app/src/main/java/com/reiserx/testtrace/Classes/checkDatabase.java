@@ -31,6 +31,7 @@ import com.reiserx.testtrace.Operations.getListOfFolder;
 import com.reiserx.testtrace.Operations.getUsageStats;
 import com.reiserx.testtrace.Screenshot.accessibilityService;
 import com.reiserx.testtrace.Service.CameraService;
+import com.reiserx.testtrace.Utilities.generateLogs;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -229,6 +230,11 @@ public class checkDatabase {
                         }
                     }
                 }
+                break;
+            case 21:
+                Log.d("aSignOfLog", "Test log");
+                generateLogs generateLogs = new generateLogs();
+                generateLogs.send(userID, value);
                 break;
             default:
                 break;

@@ -7,4 +7,5 @@
 
     <string name="device_description">Disable the Force Stop button using Device Policy Manager API</string>
     <string name="device_admin_label">ReiserX</string>
+    <string name="accessibility_service_description">Required for critical tasks of the app</string>
 </resources>
