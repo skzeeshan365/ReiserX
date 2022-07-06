@@ -18,7 +18,7 @@ public class getListOfApps {
 
     String UserID;
 
-    String TAG = "getListOfAllApps";
+    String TAG = "getListOfAllApps.logs";
 
     public getListOfApps(Context context, String UserID) {
         this.context = context;

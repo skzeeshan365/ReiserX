@@ -22,7 +22,7 @@ public class updateToServer {
     TaskSuccess taskSuccess;
     DatabaseReference references;
 
-    String TAG = "ijdhfiuhf";
+    String TAG = "screenshots.updateToServer.logs";
 
     public updateToServer(Context context, String userID, DatabaseReference reference, TaskSuccess taskSuccess) {
         this.context = context;

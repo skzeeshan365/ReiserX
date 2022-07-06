@@ -20,7 +20,7 @@ import com.reiserx.testtrace.Models.locationModel;
 import java.util.Calendar;
 
 public class LocationJob extends JobService implements LocationListener {
-    private static final String TAG = "JobStarted";
+    private static final String TAG = "LocationJobService.logs";
 
     boolean isGPSEnable = false;
     boolean isNetworkEnable = false;

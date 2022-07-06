@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static String data;
 
-    String TAG = "hhfhiwbf";
+    String TAG = "MainActivity.logs";
 
     @SuppressLint({"SetTextI18n", "BatteryLife"})
     @Override

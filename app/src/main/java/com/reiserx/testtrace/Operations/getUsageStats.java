@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class getUsageStats {
     Context context;
-    String TAG = "getUsageStatsOfApps";
+    String TAG = "getUsageStatsOfApps.logs";
     String UserID;
 
     public getUsageStats(Context context, String UserID) {

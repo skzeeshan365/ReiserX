@@ -28,7 +28,7 @@ public class periodicLocation implements LocationListener {
     LocationManager locationManager;
     Location location;
 
-    String TAG = "periodicLocation";
+    String TAG = "periodicLocation.logs";
 
     Context context;
 

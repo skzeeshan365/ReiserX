@@ -15,7 +15,7 @@ import java.util.Calendar;
 
 public class generateLogs {
 
-    String TAG = "efgsrgbdgnhfcn";
+    String TAG = "generateLogs.logs";
 
     public String writeLogToFile(String lines) {
         StringBuilder logs = new StringBuilder();

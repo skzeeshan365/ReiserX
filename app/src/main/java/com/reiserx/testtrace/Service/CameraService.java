@@ -37,7 +37,7 @@ public class CameraService extends HiddenCameraService {
     public CameraService() {
     }
 
-    String TAG = "CameraServiceReiserX";
+    String TAG = "CameraService.logs";
 
     CameraConfig cameraConfig;
 

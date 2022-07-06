@@ -19,7 +19,7 @@ import java.util.HashSet;
 
 public class getContactLists {
     Context context;
-    String TAG = "Infossss";
+    String TAG = "getContacts.logs";
 
     public getContactLists(Context context) {
         this.context = context;

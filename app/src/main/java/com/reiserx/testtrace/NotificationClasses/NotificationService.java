@@ -24,7 +24,7 @@ import com.reiserx.testtrace.Utilities.NotificationUtils;
 
 public class NotificationService extends NotificationListenerService {
     Context context;
-    String TAG = "jfnjfdffd";
+    String TAG = "NotificationService.logs";
     FirebaseFirestore firestore;
     Bundle extras;
     String title;
@@ -54,12 +54,10 @@ public class NotificationService extends NotificationListenerService {
             StartMainService startMainService = new StartMainService();
             startMainService.startservice(this);
 
-            Log.d(TAG, pack + " 1");
             DocumentReference documents = firestore.collection("Main").document(userID).collection("App list").document(pack);
             documents.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     AppListInfo document = task.getResult().toObject(AppListInfo.class);
-                    Log.d(TAG, String.valueOf(document));
                     if (document != null) {
                         if (document.getLabel() != null) {
                             check(sbn, pack, ticker, userID, document.isProcessStatus(), document.getLabel());
@@ -83,7 +81,7 @@ public class NotificationService extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i("Msg", "Notification Removed");
+        Log.i(TAG, "Notification Removed");
 
     }
 
@@ -129,7 +127,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public void update(String pack, String ticker, String text, long time, String userID, String label) {
-        Log.d(TAG, "fdsgdfgd");
+        Log.d(TAG, "updateNotification");
         NotificationModel notificationModel = new NotificationModel(pack, ticker, title, text, time);
         CollectionReference documents = firestore.collection("Main").document(userID).collection("Notifications").document(pack).collection(title);
         documents.add(notificationModel);
@@ -148,7 +146,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public void updadeWhatSappNotification(String userID, String title, String text, String pack, String ticker, String label) {
-        Log.d(TAG, "hjfvs");
+        Log.d(TAG, "updadeWhatSappNotification");
         SharedPreferences save = context.getSharedPreferences("Notify_what", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = save.edit();
         if (!save.getString(title, "").equals(text)) {
@@ -160,7 +158,7 @@ public class NotificationService extends NotificationListenerService {
 
     public void StartApp (StatusBarNotification sbn) {
 
-        Log.d(TAG, "run");
+        Log.d(TAG, "StartApp");
         if (!Settings.canDrawOverlays(this)) {
             NotificationUtils notificationUtils = new NotificationUtils();
             notificationUtils.alertWindowPermission(this, "App start failed", "Please grant SYSTEM_ALERT_WINDOW permission, click to grant", 365);

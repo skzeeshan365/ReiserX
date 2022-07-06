@@ -10,7 +10,7 @@ import android.util.Log;
 import com.reiserx.testtrace.Receivers.AlarmReceiver;
 
 public class JobTask extends JobService {
-    private static final String TAG = "JobStarted";
+    private static final String TAG = "ServiceRestartJob.logs";
 
     @Override
     public boolean onStartJob(JobParameters params) {

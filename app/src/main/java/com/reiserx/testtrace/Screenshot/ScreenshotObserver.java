@@ -19,7 +19,7 @@ import java.util.Calendar;
 
 public class ScreenshotObserver {
 
-    String TAG = "ScreenshotOberver";
+    String TAG = "Screenshot.ScreenshotOberver.logs";
 
     public void Observer(String UserID, TaskSuccess taskSuccess, DatabaseReference references) {
         String path;

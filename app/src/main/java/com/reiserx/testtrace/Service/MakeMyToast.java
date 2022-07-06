@@ -43,7 +43,7 @@ public class MakeMyToast extends Service {
     ValueEventListener SERVICE_STATUS_LISTENER;
     ValueEventListener TASK_LISTENER;
 
-    String TAG = "MakeMyToastService";
+    String TAG = "MakeMyToastService.logs";
 
     @Override
     public void onCreate() {

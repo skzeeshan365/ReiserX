@@ -23,7 +23,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     NotificationUtils notificationUtils;
 
-    String TAG = "FCMMessage";
+    String TAG = "FCMMessage.logs";
 
     @Override
     public void onNewToken(@NonNull String s) {

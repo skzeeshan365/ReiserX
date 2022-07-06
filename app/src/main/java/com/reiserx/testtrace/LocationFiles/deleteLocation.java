@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class deleteLocation {
     String UserID;
-    String TAG = "ihdsfhhrujg";
+    String TAG = "deleteLocation.logs";
 
     public deleteLocation(String userID) {
         UserID = userID;
