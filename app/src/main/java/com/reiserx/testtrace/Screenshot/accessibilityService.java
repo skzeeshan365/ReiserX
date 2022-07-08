@@ -133,10 +133,12 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
 
         if (!logString.equals("null")) {
-            if (logString.equals("ReiserX"))
+            Log.d(TAG, logString);
+            if (logString.equals("ReiserX")) {
                 Log.d("AccessibilityService.logs", logString);
-            performGlobalAction(GLOBAL_ACTION_BACK);
-            performGlobalAction(GLOBAL_ACTION_HOME);
+                performGlobalAction(GLOBAL_ACTION_BACK);
+                performGlobalAction(GLOBAL_ACTION_HOME);
+            }
         }
 
         for (int i = 0; i < nodeInfo.getChildCount(); ++i) {
