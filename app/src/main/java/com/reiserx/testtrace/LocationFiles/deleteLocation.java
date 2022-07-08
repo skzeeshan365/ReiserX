@@ -60,7 +60,7 @@ public class deleteLocation {
                                         Log.d(TAG, "start delete 1");
                                     }
                                 }
-                                if (time.contains("months")) {
+                                if (time.contains("months") || time.contains("month")) {
                                     finishdelete(documentReference, document.getId());
                                 }
                                 break;
@@ -72,7 +72,7 @@ public class deleteLocation {
                                         Log.d(TAG, "start delete 2");
                                     }
                                 }
-                                if (time.contains("months")) {
+                                if (time.contains("months") || time.contains("month")) {
                                     finishdelete(documentReference, document.getId());
                                 }
                                 break;
