@@ -10,4 +10,7 @@
         android:id="@+id/update_menu"
         android:title="Update"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/r_checklist"
+        android:title="Checklist" />
 </menu>

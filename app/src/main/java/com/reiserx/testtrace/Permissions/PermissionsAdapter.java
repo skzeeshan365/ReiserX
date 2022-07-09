@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -101,7 +102,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
                 switch1.setChecked(checkStoragePermission());
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-                        
+                        undue();
                     } else {
                         reqStoragePermission();
                         switch1.setChecked(true);
@@ -114,7 +115,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
                 switch1.setChecked(checkPermissions(permissions));
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-                        
+                        undue();
                     } else {
                         ActivityCompat.requestPermissions(activity, new String[]{READ_CONTACTS}, 100);
                         switch1.setChecked(true);
@@ -126,9 +127,8 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
                         READ_CALL_LOG};
                 switch1.setChecked(checkPermissions(permissions));
                 itemView.setOnClickListener(view -> {
-                    Log.d("ijsfnsihf", String.valueOf(1));
                     if (switch1.isChecked()) {
-                        Log.d("ijsfnsihf", String.valueOf(2));
+                        undue();
                     } else {
                         permissions = new String[]{
                                 READ_CALL_LOG};
@@ -143,7 +143,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
                 switch1.setChecked(checkPermissions(permissions));
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-                        
+                        undue();
                     } else {
                         ActivityCompat.requestPermissions(activity, new String[]{RECORD_AUDIO}, 100);
                         switch1.setChecked(true);
@@ -157,7 +157,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-                        
+                        undue();
                     } else {
                         ActivityCompat.requestPermissions(activity, new String[]{CAMERA}, 100);
                         switch1.setChecked(true);
@@ -177,7 +177,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-
+                        undue();
                     } else {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                             permissions = new String[]{
@@ -203,7 +203,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-
+                        undue();
                     } else {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                                 Uri.parse("package:" + context.getPackageName()));
@@ -217,7 +217,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-
+                        undue();
                     } else {
                         Intent usage = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                         context.startActivity(usage);
@@ -236,7 +236,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-
+                        undue();
                     } else {
                         Intent intents = new Intent(
                                 "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
@@ -248,10 +248,13 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
             case 10:
 
                 switch1.setChecked(checkAccessibilityPermission());
+                if (!switch1.isChecked()) {
+                    Toast.makeText(context, "please turn on Accessibility Service", Toast.LENGTH_SHORT).show();
+                }
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-
+                        undue();
                     } else {
                         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -269,7 +272,7 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-
+                        undue();
                     } else {
                         Intent intent = new Intent();
                         intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
@@ -280,6 +283,14 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
                 });
                 break;
         }
+    }
+
+    public void undue () {
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle("TURN OF");
+        alert.setMessage("To turn of this feature go to settings");
+        alert.setPositiveButton("ok", null);
+        alert.show();
     }
 
     private void req(String[] permissions) {
@@ -407,11 +418,6 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
             Log.d(TAG, e.toString());
         }
         if (accessEnabled == 0) {
-            // if not construct intent to request permission
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // request permission via start activity for result
-            context.startActivity(intent);
             Log.d(TAG, "start 1");
             return false;
         } else {

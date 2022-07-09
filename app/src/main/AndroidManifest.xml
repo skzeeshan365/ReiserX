@@ -65,14 +65,8 @@
             android:exported="true"></service>
 
         <activity
-            android:name=".Activites.OverlayActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activites.Update_app"
             android:exported="false" />
-        <activity
-            android:name=".Activites.PermitActivity"
-            android:exported="true" />
         <activity
             android:name=".Activites.MainActivity"
             android:exported="true"

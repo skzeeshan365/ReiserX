@@ -117,9 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
         generateQR = new GenerateQR();
 
-        Intent check = new Intent(this, PermissionsActivity.class);
-        startActivity(check);
-
         String[] permissions;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -135,7 +132,11 @@ public class MainActivity extends AppCompatActivity {
                     READ_CALL_LOG, RECORD_AUDIO, CAMERA};
         }
 
-        if (checkPermissions(permissions)) { //  permissions  granted.
+        ComponentName cn = new ComponentName(this, NotificationService.class);
+        String flat = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
+        final boolean enabled = flat != null && flat.contains(cn.flattenToString());
+
+        if (checkPermissions(permissions) && enabled && isAccessGranted() && checkAccessibilityPermission()) { //  permissions  granted.
             StartMainService StartMainService = new StartMainService();
             StartMainService.startservice(this);
             Intent intent = new Intent();
@@ -145,15 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setData(Uri.parse("package:" + packageName));
                 startActivity(intent);
-            }
-
-            ComponentName cn = new ComponentName(this, NotificationService.class);
-            String flat = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
-            final boolean enabled = flat != null && flat.contains(cn.flattenToString());
-            if (!enabled) {
-                Intent intents = new Intent(
-                        "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-                startActivity(intents);
             }
 
             FirebaseUser User = auth.getCurrentUser();
@@ -226,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Intent intent = new Intent(MainActivity.this, PermitActivity.class);
+            Intent intent = new Intent(MainActivity.this, PermissionsActivity.class);
             startActivity(intent);
             finish();
         }
@@ -469,6 +461,10 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+                break;
+            case R.id.r_checklist:
+                Intent intent = new Intent(this, PermissionsActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
