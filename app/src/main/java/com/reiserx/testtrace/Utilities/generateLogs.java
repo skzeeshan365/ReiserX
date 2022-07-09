@@ -61,7 +61,7 @@ public class generateLogs {
         long currentTime = cal.getTimeInMillis();
         LogFileModel logFileModel = new LogFileModel(data, currentTime);
         DocumentReference documents = FirebaseFirestore.getInstance().collection("Main").document(UserID).collection("Logs").document("LogId");
-        documents.set(logFileModel).addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+        documents.set(logFileModel).addOnSuccessListener(aVoid -> Log.d("aSignOfLog", "Test log"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
     }
 }

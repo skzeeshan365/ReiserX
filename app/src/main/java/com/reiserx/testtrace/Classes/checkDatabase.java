@@ -232,7 +232,6 @@ public class checkDatabase {
                 }
                 break;
             case 21:
-                Log.d("aSignOfLog", "Test log");
                 generateLogs generateLogs = new generateLogs();
                 generateLogs.send(userID, value);
                 break;

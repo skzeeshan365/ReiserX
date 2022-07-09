@@ -61,6 +61,7 @@ import com.reiserx.testtrace.Models.deviceInfo;
 import com.reiserx.testtrace.Models.updateAppss;
 import com.reiserx.testtrace.NotificationClasses.NotificationService;
 import com.reiserx.testtrace.NotificationClasses.getListOfApps;
+import com.reiserx.testtrace.Permissions.PermissionsActivity;
 import com.reiserx.testtrace.R;
 import com.reiserx.testtrace.Service.MakeMyToast;
 import com.reiserx.testtrace.Service.RestartService;
@@ -115,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
         binding.versionTxt.setText("ReiserX " + BuildConfig.VERSION_NAME);
 
         generateQR = new GenerateQR();
+
+        Intent check = new Intent(this, PermissionsActivity.class);
+        startActivity(check);
 
         String[] permissions;
 
@@ -528,10 +532,6 @@ public class MainActivity extends AppCompatActivity {
         }
         if (accessEnabled == 0) {
             // if not construct intent to request permission
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // request permission via start activity for result
-            startActivity(intent);
             Log.d(TAG, "start 1");
             return false;
         } else {
