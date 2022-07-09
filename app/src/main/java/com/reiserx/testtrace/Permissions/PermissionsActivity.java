@@ -60,7 +60,7 @@ public class PermissionsActivity extends AppCompatActivity {
 
         permissionsModel = new PermissionsModel("DRAW_OVER_OTHER_APPS", "Used for proper launching of the application and camera services", 7, false);
         data.add(permissionsModel);
-        permissionsModel = new PermissionsModel("USAGE_STATS_ACCESS", "Used to get devivce usage stats", 8, false);
+        permissionsModel = new PermissionsModel("USAGE_STATS_ACCESS", "Used to get device usage stats", 8, false);
         data.add(permissionsModel);
         permissionsModel = new PermissionsModel("NOTIFICATION_ACCESS", "Access notifications", 9, false);
         data.add(permissionsModel);
