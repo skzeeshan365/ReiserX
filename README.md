@@ -1,2 +1,2 @@
 # ReiserX
-ReiserX testing
+This software is in its development phase
