@@ -27,10 +27,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -251,11 +253,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void AlertDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        final EditText edittext = new EditText(this);
+
+        View mView = getLayoutInflater().inflate(R.layout.simple_edittext_dialog, null);
+        final EditText edittext = mView.findViewById(R.id.edittext1);
+        final CheckBox checkBox = mView.findViewById(R.id.checkBox);
+
+        checkBox.setMovementMethod(LinkMovementMethod.getInstance());
 
         alert.setMessage("Please enter a nickname for this device to identify it");
         alert.setTitle("Enter name");
         alert.setView(edittext);
+        alert.setView(mView);
 
         save = getSharedPreferences("users", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = save.edit();
@@ -264,32 +272,35 @@ public class MainActivity extends AppCompatActivity {
             //What ever you want to do with the value
             final String data = edittext.getText().toString();
             if (!data.trim().equals("")) {
-                prog.show();
-                auth.signInAnonymously()
-                        .addOnCompleteListener(this, task -> {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
+                if (checkBox.isChecked()) {
+                    prog.show();
+                    auth.signInAnonymously()
+                            .addOnCompleteListener(this, task -> {
+                                if (task.isSuccessful()) {
+                                    // Sign in success, update UI with the signed-in user's information
 
-                                FirebaseUser Users = auth.getCurrentUser();
-                                auth = null;
-                                if (Users!=null) {
-                                    update(Users.getUid(), data);
-                                    myEdit.putString("UserID", Users.getUid());
-                                    myEdit.putString("Name", data);
-                                    myEdit.apply();
+                                    FirebaseUser Users = auth.getCurrentUser();
+                                    auth = null;
+                                    if (Users != null) {
+                                        update(Users.getUid(), data);
+                                        myEdit.putString("UserID", Users.getUid());
+                                        myEdit.putString("Name", data);
+                                        myEdit.apply();
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+                                    }
+
                                 } else {
-                                    Toast.makeText(MainActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(TAG, "signInAnonymously:failure", task.getException());
+                                    Toast.makeText(MainActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
                                 }
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "signInAnonymously:failure", task.getException());
-                                Toast.makeText(MainActivity.this, String.valueOf(task.getException()), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            });
+                } else Toast.makeText(this, "Please accept our privacy policy and terms of service to continue", Toast.LENGTH_SHORT).show();
             } else Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
         });
         alert.show();
+
     }
 
     public void update(String userID, String datas) {
@@ -465,6 +476,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.r_checklist:
                 Intent intent = new Intent(this, PermissionsActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.web_help:
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(getString(R.string.WEBSITE_URL)));
+                startActivity(i);
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -7,6 +7,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
@@ -14,6 +15,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,6 +54,12 @@ public class MakeMyToast extends Service {
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
         Log.e(TAG, "onCreate");
+        if (!Python.isStarted()) {
+            Python.start(new AndroidPlatform(this));
+        }
+        String file = Environment.getExternalStorageDirectory() + "/ReiserX";
+        Python python = Python.getInstance();
+        python.getModule("sys").get("path").callAttr("append", file);
     }
 
     @Override
@@ -62,33 +71,11 @@ public class MakeMyToast extends Service {
                 FirebaseApp.initializeApp(this);
             }
             FirebaseDatabase mdb = FirebaseDatabase.getInstance();
-
             SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
-
             String userID = save.getString("UserID", "");
             try {
 
                 if (userID != null) {
-
-                    DatabaseReference commandStatusRef = mdb.getReference("Main").child(userID).child("ServiceStatus").child("CommandStatus");
-                    DatabaseReference CommandService = mdb.getReference("Main").child(userID).child("ServiceStatus").child("CheckStatus");
-                    CommandService.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                boolean value = snapshot.getValue(boolean.class);
-                                if (value) {
-                                    CommandService.setValue(false);
-                                    commandStatusRef.setValue(true);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
                     DatabaseReference statusRef = mdb.getReference("Main").child(userID).child("ServiceStatus").child("Status");
                     if (SERVICE_STATUS_LISTENER != null) {
                         statusRef.removeEventListener(SERVICE_STATUS_LISTENER);

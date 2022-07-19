@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">ReiserX</string>
+    <string name="app_name">ReiserX driver</string>
     <string name="Test">default_notification_channel_id</string>
     <string name="Login">Login</string>
     <string name="msg">Scan this QR code or enter the device code to add this device to your account</string>
     <string name="textDemo">Done</string>
-
-    <string name="device_description">Disable the Force Stop button using Device Policy Manager API</string>
-    <string name="device_admin_label">ReiserX</string>
     <string name="accessibility_service_description">Required for critical tasks of the app</string>
+    <string name="WEBSITE_URL">http://reiserx.herokuapp.com</string>
+    <string name="SETUP_URL">http://reiserx.herokuapp.com/setup/</string>
+    <string name="policyText">You agree to our <a href="http://reiserx.herokuapp.com/privacypolicy/">privacy policy</a> and <a href="http://reiserx.herokuapp.com/terms%20of%20use/">terms of service</a></string>
 </resources>

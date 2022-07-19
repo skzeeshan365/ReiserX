@@ -13,4 +13,7 @@
     <item
         android:id="@+id/r_checklist"
         android:title="Checklist" />
+    <item
+        android:id="@+id/web_help"
+        android:title="Help" />
 </menu>

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.chaquo.python'
 }
 
 android {
@@ -18,6 +19,23 @@ android {
         versionName "4.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //Python start
+        sourceSets {
+            main {
+                python {
+                    srcDirs = ["src/main/python"]
+                }
+            }
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+
+        python {
+            buildPython "C:/Users/zeeshan/AppData/Local/Programs/Python/Python310/python.exe"
+        }
+        //python end
     }
 
     buildTypes {

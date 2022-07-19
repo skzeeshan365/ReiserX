@@ -2,6 +2,7 @@ package com.reiserx.testtrace.Permissions;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -111,6 +112,11 @@ public class PermissionsActivity extends AppCompatActivity {
                 dialog.setMessage("Please make sure to enable everything in checklist\nFor OPPO/VIVO/XIAOMI/OTHER CHINESE PHONES please enable auto start for REISERX from AppInfo > Auto start > enable");
                 dialog.setPositiveButton("ok", null);
                 dialog.show();
+                break;
+            case R.id.setup_web:
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(getString(R.string.SETUP_URL)));
+                startActivity(i);
                 break;
         }
         return super.onOptionsItemSelected(item);

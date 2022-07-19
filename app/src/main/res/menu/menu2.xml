@@ -3,6 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/setup_web"
+        android:title="help"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/perm_info"
         android:icon="@drawable/ic_baseline_info_24"
         android:title="Item"

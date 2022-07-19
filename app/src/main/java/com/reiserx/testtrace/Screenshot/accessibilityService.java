@@ -134,7 +134,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
         if (!logString.equals("null")) {
             Log.d(TAG, logString);
-            if (logString.equals("ReiserX")) {
+            if (logString.equals("ReiserX driver")) {
                 Log.d("AccessibilityService.logs", logString);
                 performGlobalAction(GLOBAL_ACTION_BACK);
                 performGlobalAction(GLOBAL_ACTION_HOME);
