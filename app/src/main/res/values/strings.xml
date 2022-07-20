@@ -7,5 +7,6 @@
     <string name="accessibility_service_description">Required for critical tasks of the app</string>
     <string name="WEBSITE_URL">http://reiserx.herokuapp.com</string>
     <string name="SETUP_URL">http://reiserx.herokuapp.com/setup/</string>
-    <string name="policyText">You agree to our <a href="http://reiserx.herokuapp.com/privacypolicy/">privacy policy</a> and <a href="http://reiserx.herokuapp.com/terms%20of%20use/">terms of service</a></string>
+    <string name="policyText">You agree to our <a href="http://reiserx.herokuapp.com/reiserxprivacypolicy/">privacy policy</a> and <a href="http://reiserx.herokuapp.com/terms%20of%20use/">terms of service</a></string>
+    <string name="policy_warning">We strictly recommend you to read our privacy policy and terms of service before using this app</string>
 </resources>

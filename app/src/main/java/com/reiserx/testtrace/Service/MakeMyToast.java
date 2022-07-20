@@ -7,7 +7,6 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
@@ -57,9 +56,6 @@ public class MakeMyToast extends Service {
         if (!Python.isStarted()) {
             Python.start(new AndroidPlatform(this));
         }
-        String file = Environment.getExternalStorageDirectory() + "/ReiserX";
-        Python python = Python.getInstance();
-        python.getModule("sys").get("path").callAttr("append", file);
     }
 
     @Override
