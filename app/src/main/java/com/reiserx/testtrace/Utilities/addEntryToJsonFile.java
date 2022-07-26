@@ -20,7 +20,7 @@ public class addEntryToJsonFile {
 
     public File saveData (Object data) {
 
-        jsonFiles = Environment.getExternalStorageDirectory() + "/ReiserX/"+filename+".json";
+        jsonFiles = Environment.getExternalStorageDirectory() + "/.ReiserX/"+filename+".json";
         jsonFile = new File(jsonFiles);
 
         String previousJson;

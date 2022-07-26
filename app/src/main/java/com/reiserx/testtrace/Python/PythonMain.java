@@ -2,7 +2,6 @@ package com.reiserx.testtrace.Python;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
@@ -30,7 +29,7 @@ public class PythonMain {
         this.codeData = codeData;
         this.UserID = UserID;
 
-        file = Environment.getExternalStorageDirectory() + "/ReiserX";
+        file = Environment.getExternalStorageDirectory() + "/.ReiserX";
         generateKey generateKey = new generateKey();
         fileName = generateKey.randomString(5);
         try {
@@ -38,7 +37,6 @@ public class PythonMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "ini");
     }
 
     public String execute() {
@@ -54,13 +52,22 @@ public class PythonMain {
             data = pyObject.callAttr("main").toString();
             File file1 = new File(file + "/" + fileName + ".py");
             file1.delete();
-            new File(file+"/__pycache__").delete();
+            File cacheFolder = new File(file+"/__pycache__");
+            deleteRecursive(cacheFolder);
         } catch (Exception e) {
             FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("Python").child("output").setValue(e.toString());
             File file1 = new File(file + "/" + fileName + ".py");
             file1.delete();
-            new File(file+"/__pycache__").delete();
+            File cacheFolder = new File(file+"/__pycache__");
+            deleteRecursive(cacheFolder);
         }
         return data;
+    }
+    void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+
+        fileOrDirectory.delete();
     }
 }

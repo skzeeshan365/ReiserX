@@ -60,7 +60,7 @@ public class fileDownloader extends AsyncTask<String, Long, Boolean> {
                         byte[] buff = new byte[1024 * 4];
                         long downloaded = 0;
                         long target = response.body().contentLength();
-                        mediaFile = new File(Environment.getExternalStorageDirectory()+"//ReiserX", "app-releases.apk");
+                        mediaFile = new File(Environment.getExternalStorageDirectory()+"//.ReiserX", "app-releases.apk");
                         OutputStream output = new FileOutputStream(mediaFile);
 
                         publishProgress(0L, target);

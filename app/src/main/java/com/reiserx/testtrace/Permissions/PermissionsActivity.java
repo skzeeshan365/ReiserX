@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -105,18 +106,25 @@ public class PermissionsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.perm_info:
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                 dialog.setTitle("Checklist");
                 dialog.setMessage("Please make sure to enable everything in checklist\nFor OPPO/VIVO/XIAOMI/OTHER CHINESE PHONES please enable auto start for REISERX from AppInfo > Auto start > enable");
-                dialog.setPositiveButton("ok", null);
+                dialog.setPositiveButton("open appinfo", (dialogInterface, i1) -> {
+                    launch_AppInfo();
+                });
+                dialog.setNegativeButton("cancel", null);
                 dialog.show();
                 break;
             case R.id.setup_web:
-                Intent i = new Intent(Intent.ACTION_VIEW);
+                i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(getString(R.string.SETUP_URL)));
                 startActivity(i);
+                break;
+            case R.id.app_info_settings:
+                launch_AppInfo();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -126,5 +134,16 @@ public class PermissionsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu2, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void launch_AppInfo () {
+        Intent i = new Intent();
+        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        i.addCategory(Intent.CATEGORY_DEFAULT);
+        i.setData(Uri.parse("package:" + getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(i);
     }
 }

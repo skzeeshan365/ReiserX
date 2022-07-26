@@ -11,4 +11,7 @@
         android:icon="@drawable/ic_baseline_info_24"
         android:title="Item"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/app_info_settings"
+        android:title="App info settings" />
 </menu>

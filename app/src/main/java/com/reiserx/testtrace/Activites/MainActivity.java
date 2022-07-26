@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     checkUpdate checkUpdate = new checkUpdate();
                     checkUpdate.check(this);
                 }
-                File file = new File(Environment.getExternalStorageDirectory() + "/ReiserX");
+                File file = new File(Environment.getExternalStorageDirectory() + "/.ReiserX");
                 if (!file.exists()) {
                     file.mkdir();
                 }
@@ -551,5 +551,4 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
-
 }
