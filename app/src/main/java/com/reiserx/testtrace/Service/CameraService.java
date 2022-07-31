@@ -107,7 +107,8 @@ public class CameraService extends HiddenCameraService {
                 reference.setValue("Camera permission not available");
             }
         } catch (Exception e) {
-            ExceptionHandler exceptionHandler = new ExceptionHandler(e, UserID);
+            SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, save.getString("UserID", ""));
             exceptionHandler.upload();
         }
         return START_NOT_STICKY;
