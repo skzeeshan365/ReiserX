@@ -1,7 +1,7 @@
 # ReiserX driver
 An android app for remote access to your device
 
-For in-app features and documentation please visit [Documentation](http://reiserx.com/Documentation/)
+For in-app features and documentation please visit [Documentation](http://reiserx.herokuapp.com/Documentation/)
 
 Features
 > Access all the data in your device
