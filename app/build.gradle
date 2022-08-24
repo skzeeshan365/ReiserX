@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     buildFeatures {
         viewBinding true
@@ -14,9 +14,9 @@ android {
     defaultConfig {
         applicationId "com.reiserx.testtrace"
         minSdk 23
-        targetSdk 31
-        versionCode 34
-        versionName "4.3"
+        targetSdk 32
+        versionCode 35
+        versionName "4.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.test:monitor:1.5.0'
