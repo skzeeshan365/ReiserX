@@ -44,13 +44,16 @@ Components involved in main service
 2. FCM  
 3. Broadcast receiver  
 4. Alarm manager  
+
 It performs all the operations according to commands received from the server (that is sent by 
 ReiserX panel)  
+
 Server:  
 Firebase Realtime Database: Used to deliver commands and manage functioning of the app  
 Firebase Firestore: Used to store data that is collected from device  
 Firebase Storage: Used to store various types of files upload by ReiserX  
 Firebase Authentication: for authenticating users  
+
 Feature components:  
 Accessibility service: to take screenshot, capture audio, capture image, block uninstall 
 Notification service: To collect and store notification history, restart the main service 
@@ -59,6 +62,7 @@ These are the main components of ReiserX driver that are necessary for functioni
 Other components are feature based (e.g. they are involved only in their respective feature 
 operations not the the whole app for example, location service, Camera service, Python 
 interpreter, etc.)  
+
 You can also check its documentation: http://reiserx.herokuapp.com/Documentation/  
 It has a wide range of components for all the features and explaining all of them is time 
 consuming, So I recommend to use it for once and you will be able to understand it properly. 
