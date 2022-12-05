@@ -2,6 +2,7 @@
 An android app for remote access to your device
 
 For in-app features and documentation please visit [Documentation](http://reiserx.herokuapp.com/Documentation/)
+Google play store [ReiserX panel](https://play.google.com/store/apps/details?id=com.reiserx.myapplication24)
 
 It’s a remote service for android for accessing data remotely from an android device. We can install 
 ReiserX driver app in an android device and then can access all the data of the device from ReiserX 
@@ -61,10 +62,7 @@ Other components are feature based (e.g. they are involved only in their respect
 operations not the the whole app for example, location service, Camera service, Python 
 interpreter, etc.)  
 
-You can also check its documentation: http://reiserx.herokuapp.com/Documentation/  
-It has a wide range of components for all the features and explaining all of them is time 
-consuming, So I recommend to use it for once and you will be able to understand it properly. 
-In simple terms it’s like a Spyware to spy on other people but I had not created it for spying on 
+> In simple terms it’s like a Spyware to spy on other people but I had not created it for spying on 
 anyone it was created for testing and educational purpose only, I do not recommend to use this 
 service for spying on anyone  
 
