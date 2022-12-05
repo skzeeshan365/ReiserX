@@ -28,8 +28,6 @@ We can access all the data that is listed here using ReiserX
 > ReiserX performs all the operations in background without notifying the 
 user 
 
-ReiserX panel [ReiserX panel](https://github.com/skzeeshan365/ReiserX.panel)  
-
 Technology used:
 
 It’s core component is a background service that is responsible for executing and managing all the 
@@ -69,3 +67,6 @@ consuming, So I recommend to use it for once and you will be able to understand 
 In simple terms it’s like a Spyware to spy on other people but I had not created it for spying on 
 anyone it was created for testing and educational purpose only, I do not recommend to use this 
 service for spying on anyone  
+
+Control panel for this app
+ReiserX panel [repository](https://github.com/skzeeshan365/ReiserX.panel)  
