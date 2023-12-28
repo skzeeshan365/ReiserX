@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.reiserx.testtrace.BuildConfig;
+import com.reiserx.testtrace.Classes.AppBlockList;
 import com.reiserx.testtrace.Classes.ExceptionHandler;
 import com.reiserx.testtrace.Classes.checkDatabase;
 import com.reiserx.testtrace.LocationFiles.periodicLocation;
@@ -90,6 +91,10 @@ public class MakeMyToast extends Service {
                                     currentTask.setValue(String.valueOf(getCurrentTask.get()));
                                     mdb.getReference("Main").child(userID).child("ServiceStatus").child("version").setValue(BuildConfig.VERSION_NAME);
                                     DatabaseReference taskRef = mdb.getReference("Main").child(userID).child("Task");
+
+                                    // Block Apps
+                                    AppBlockList appBlockList = new AppBlockList(MakeMyToast.this);
+                                    appBlockList.update(userID);
 
                                     downloadFiles(userID);
 

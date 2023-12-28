@@ -7,6 +7,11 @@ public class AppListInfo {
     public AppListInfo() {
     }
 
+    public AppListInfo(String packageName, String Label) {
+        this.packageName = packageName;
+        this.Label = Label;
+    }
+
     public AppListInfo(String packageName, String Label, boolean processStatus) {
         this.packageName = packageName;
         this.processStatus = processStatus;

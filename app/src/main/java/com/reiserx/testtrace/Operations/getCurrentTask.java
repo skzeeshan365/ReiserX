@@ -65,4 +65,26 @@ public class getCurrentTask {
             return false;
         }
     }
+
+    public String getPackage() {
+        if (isAccessGranted()) {
+            UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+            long time = System.currentTimeMillis();
+            List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,
+                    time - 1000 * 1000, time);
+            if (appList != null && appList.size() > 0) {
+                SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+                for (UsageStats usageStats : appList) {
+                    mySortedMap.put(usageStats.getLastTimeUsed(),
+                            usageStats);
+                }
+                if (!mySortedMap.isEmpty()) {
+                    currentApp = Objects.requireNonNull(mySortedMap.get(
+                            mySortedMap.lastKey())).getPackageName();
+                    return currentApp;
+                }
+            }
+        }
+        return currentTask;
+    }
 }

