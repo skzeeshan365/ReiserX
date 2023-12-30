@@ -12,6 +12,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.POWER_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
+import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AppOpsManager;
@@ -20,15 +22,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -39,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.reiserx.testtrace.NotificationClasses.NotificationService;
 import com.reiserx.testtrace.R;
+import com.reiserx.testtrace.Screenshot.accessibilityService;
 import com.reiserx.testtrace.databinding.PermissionLayoutMainBinding;
 import com.reiserx.testtrace.databinding.PermissionsLayoutHeaderBinding;
 
@@ -247,14 +251,14 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
                 break;
             case 10:
 
-                switch1.setChecked(checkAccessibilityPermission());
+                switch1.setChecked(checkAccessibilityPermission(accessibilityService.class));
                 if (!switch1.isChecked()) {
                     Toast.makeText(context, "please turn on Accessibility Service", Toast.LENGTH_SHORT).show();
                 }
 
                 itemView.setOnClickListener(view -> {
                     if (switch1.isChecked()) {
-                        undue();
+                        disableAccessibility();
                     } else {
                         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -409,20 +413,30 @@ public class PermissionsAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public boolean checkAccessibilityPermission () {
-        int accessEnabled = 0;
-        try {
-            accessEnabled = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-            Log.d(TAG, e.toString());
+    public boolean checkAccessibilityPermission (Class<? extends AccessibilityService> service) {
+        AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK);
+
+        for (AccessibilityServiceInfo enabledService : enabledServices) {
+            ServiceInfo enabledServiceInfo = enabledService.getResolveInfo().serviceInfo;
+            if (enabledServiceInfo.packageName.equals(context.getPackageName()) && enabledServiceInfo.name.equals(service.getName()))
+                return true;
         }
-        if (accessEnabled == 0) {
-            Log.d(TAG, "start 1");
-            return false;
-        } else {
-            Log.d(TAG, "start 2");
-            return true;
-        }
+
+        return false;
+    }
+
+    void disableAccessibility() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle("TURN OF");
+        alert.setMessage("To turn of this feature go to settings");
+        alert.setPositiveButton("settings", (dialogInterface, i) -> {
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // request permission via start activity for result
+            context.startActivity(intent);
+        });
+        alert.setNegativeButton("cancel", null);
+        alert.show();
     }
 }

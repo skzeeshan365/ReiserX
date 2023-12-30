@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.reiserx.testtrace.BuildConfig;
+import com.reiserx.testtrace.Classes.AccessibilityFlags;
 import com.reiserx.testtrace.Classes.AppBlockList;
 import com.reiserx.testtrace.Classes.ExceptionHandler;
 import com.reiserx.testtrace.Classes.checkDatabase;
@@ -93,8 +94,12 @@ public class MakeMyToast extends Service {
                                     DatabaseReference taskRef = mdb.getReference("Main").child(userID).child("Task");
 
                                     // Block Apps
-                                    AppBlockList appBlockList = new AppBlockList(MakeMyToast.this);
-                                    appBlockList.update(userID);
+                                    AppBlockList appBlockList = new AppBlockList(MakeMyToast.this, userID);
+                                    appBlockList.update();
+
+                                    // AccessibilityFlags
+                                    AccessibilityFlags accessibilityFlags = new AccessibilityFlags(MakeMyToast.this, userID);
+                                    accessibilityFlags.setFlags();
 
                                     downloadFiles(userID);
 

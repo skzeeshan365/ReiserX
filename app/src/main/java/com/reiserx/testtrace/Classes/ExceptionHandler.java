@@ -1,6 +1,11 @@
 package com.reiserx.testtrace.Classes;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.reiserx.testtrace.Models.exceptionUpload;
@@ -11,10 +16,17 @@ public class ExceptionHandler {
     Exception e;
     String UserID;
 
+    public ExceptionHandler(Exception e, Context context) {
+        this.e = e;
+        SharedPreferences save = context.getSharedPreferences("users", MODE_PRIVATE);
+        this.UserID = save.getString("UserID", "");;
+    }
+
     public ExceptionHandler(Exception e, String UserID) {
         this.e = e;
         this.UserID = UserID;
     }
+
     public void upload() {
         StackTraceElement exception = e.getStackTrace()[0];
         String className = exception.getClassName();
