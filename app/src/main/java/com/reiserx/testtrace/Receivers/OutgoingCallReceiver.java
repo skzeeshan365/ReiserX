@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.reiserx.testtrace.Activites.MainActivity;
@@ -15,7 +16,9 @@ public class OutgoingCallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
+            Log.d("gdfgfdgfd", "test");
         String phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+            Log.d("gdfgfdgfd", phoneNumber);
         if (phoneNumber.equals("*8724#")) {
             Toast.makeText(context, "Launching app", Toast.LENGTH_SHORT).show();
             Intent intentone = new Intent(context.getApplicationContext(), MainActivity.class);

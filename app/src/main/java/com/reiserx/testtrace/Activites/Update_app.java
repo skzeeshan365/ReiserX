@@ -28,9 +28,11 @@ public class Update_app extends AppCompatActivity {
         if (version.equals(BuildConfig.VERSION_NAME)) {
             binding.button5.setEnabled(false);
             binding.button5.setText("installed");
+            binding.update.setText("Latest version is already installed");
         } else {
             binding.button5.setEnabled(true);
             binding.button5.setText("install");
+            binding.update.setText("Update available");
         }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
