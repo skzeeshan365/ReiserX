@@ -269,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor myEdit = save.edit();
 
         alert.setPositiveButton("Login", (dialog, whichButton) -> {
-            //What ever you want to do with the value
             final String data = edittext.getText().toString();
             if (!data.trim().equals("")) {
                 if (checkBox.isChecked()) {
