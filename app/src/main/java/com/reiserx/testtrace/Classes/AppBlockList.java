@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -41,12 +40,7 @@ public class AppBlockList {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     AppListInfo appListInfo = snapshot1.getValue(AppListInfo.class);
                     list.add(appListInfo);
-                    Log.d("AccessibilityService.logss", appListInfo.getLabel());
                 }
-
-                if (list.isEmpty())
-                    myEdit.clear().apply();
-                else
                     appList(list, UserID);
             }
 
