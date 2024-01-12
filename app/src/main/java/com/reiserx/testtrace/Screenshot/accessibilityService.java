@@ -36,6 +36,8 @@ import com.reiserx.testtrace.Models.AudiosDownloadUrl;
 import com.reiserx.testtrace.Models.TaskSuccess;
 import com.reiserx.testtrace.Operations.getCurrentTask;
 import com.reiserx.testtrace.R;
+import com.reiserx.testtrace.Utilities.CONSTANTS;
+import com.reiserx.testtrace.Utilities.DataStoreHelper;
 import com.reiserx.testtrace.Utilities.getRandom;
 
 import java.io.File;
@@ -58,6 +60,8 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     String name, action;
 
+    DataStoreHelper dataStoreHelper;
+
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
@@ -70,6 +74,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
         instance = this;
         updateAccessibility();
         Toast.makeText(this, "Service started", Toast.LENGTH_SHORT).show();
+        dataStoreHelper = new DataStoreHelper();
 
         sendNotification(this, "ReiserX driver", "Accessibility service is running", 10);
     }
@@ -145,10 +150,7 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
     }
 
     public void uninstalls() {
-
-        SharedPreferences uninstall = getSharedPreferences("blocked", MODE_PRIVATE);
-
-        if (uninstall.getBoolean("blocked", false)) {
+        if (dataStoreHelper.getBooleanValue(CONSTANTS.BLOCK_UNINSTALL, false)) {
             performGlobalAction(GLOBAL_ACTION_BACK);
             performGlobalAction(GLOBAL_ACTION_HOME);
         }
@@ -404,9 +406,9 @@ public class accessibilityService extends android.accessibilityservice.Accessibi
 
     void disableApps() {
         try {
-            SharedPreferences save = getSharedPreferences("blocked", MODE_PRIVATE);
+            dataStoreHelper = new DataStoreHelper();
             getCurrentTask getCurrentTask = new getCurrentTask(this);
-            if (save.getString(getCurrentTask.getPackage(), "").equals("1")) {
+            if (dataStoreHelper.getBooleanValue(getCurrentTask.getPackage(), false)) {
                 performGlobalAction(GLOBAL_ACTION_HOME);
             }
         } catch (Exception e) {

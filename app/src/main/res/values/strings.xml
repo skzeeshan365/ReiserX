@@ -10,4 +10,5 @@
     <string name="policyText">You agree to our <a href="http://reiserx.com/reiserxprivacypolicy/">privacy policy</a> and <a href="http://reiserx.herokuapp.com/terms%20of%20use/">terms of service</a></string>
     <string name="policy_warning">We strictly recommend you to read our privacy policy and terms of service before using this app</string>
     <string name="local_screenshot_1">Capturing</string>
+    <string name="local_screenshot_label">Silent screenshot</string>
 </resources>

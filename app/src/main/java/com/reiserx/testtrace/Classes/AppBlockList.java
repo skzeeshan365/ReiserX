@@ -1,9 +1,6 @@
 package com.reiserx.testtrace.Classes;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
@@ -14,22 +11,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.reiserx.testtrace.Models.AppListInfo;
+import com.reiserx.testtrace.Utilities.CONSTANTS;
+import com.reiserx.testtrace.Utilities.DataStoreHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppBlockList {
-    SharedPreferences save;
-    SharedPreferences.Editor myEdit;
     Context context;
     String UserID;
+    DataStoreHelper dataStoreHelper;
 
     public AppBlockList(Context context, String UserID) {
-        save = context.getSharedPreferences("blocked", MODE_PRIVATE);
-        myEdit = save.edit();
         this.context = context;
         this.UserID = UserID;
         blockUninstall();
+        dataStoreHelper = new DataStoreHelper();
     }
 
     public void update() {
@@ -37,11 +34,15 @@ public class AppBlockList {
         FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("DisabledApps").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    AppListInfo appListInfo = snapshot1.getValue(AppListInfo.class);
-                    list.add(appListInfo);
-                }
+                if (snapshot.exists()) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        AppListInfo appListInfo = snapshot1.getValue(AppListInfo.class);
+                        list.add(appListInfo);
+                    }
                     appList(list, UserID);
+                } else {
+                    appList(list, UserID);
+                }
             }
 
             @Override
@@ -56,16 +57,16 @@ public class AppBlockList {
             final PackageManager pm = context.getPackageManager();
             List<ApplicationInfo> apps = pm.getInstalledApplications(0);
             for (ApplicationInfo app : apps) {
-                for (AppListInfo appListInfo : list) {
-                    if (app.packageName.equals(appListInfo.getPackageName())) {
-                        myEdit.putString(app.packageName, "1");
-                        myEdit.apply();
+                if (!list.isEmpty()) {
+                    for (AppListInfo appListInfo : list) {
+                        if (app.packageName.equals(appListInfo.getPackageName())) {
+                            dataStoreHelper.putBooleanValue(app.packageName, true);
+                        } else {
+                            dataStoreHelper.removeValue(app.packageName);
+                        }
                     }
-                    else {
-                        myEdit.remove(app.packageName);
-                        myEdit.apply();
-                    }
-                }
+                } else
+                    dataStoreHelper.removeValue(app.packageName);
             }
         } catch (Exception e) {
             ExceptionHandler exceptionHandler = new ExceptionHandler(e, UserID);
@@ -74,13 +75,12 @@ public class AppBlockList {
     }
 
     void blockUninstall() {
-        FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("canUninstall").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Main").child(UserID).child("ServiceStatus").child("canUninstall").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     boolean canUninstall = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
-                    myEdit.putBoolean("blocked", canUninstall);
-                    myEdit.apply();
+                    dataStoreHelper.putBooleanValue(CONSTANTS.BLOCK_UNINSTALL, canUninstall);
                 }
             }
 

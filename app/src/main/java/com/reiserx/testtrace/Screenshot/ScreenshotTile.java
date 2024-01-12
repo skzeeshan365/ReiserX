@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
@@ -22,25 +23,19 @@ public class ScreenshotTile extends TileService {
         if (ScreenshotTile.this.getQsTile() != null) {
             Tile tile = ScreenshotTile.this.getQsTile();
             tile.setIcon(Icon.createWithResource(getApplicationContext(), R.drawable.ic_screenshot_white_24dp));
-            tile.setLabel("Screenshot");
+            tile.setLabel(getString(R.string.local_screenshot_label));
             tile.setState(Tile.STATE_INACTIVE);
             tile.updateTile();
         }
     }
 
     @Override
-    public void onTileRemoved() {
-        // Code to handle tile removed
-    }
-
-    @Override
     public void onClick() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             isAccessibilityEnabled isAccessibilityEnabled = new isAccessibilityEnabled();
             if (isAccessibilityEnabled.checkAccessibilityPermission(accessibilityService.class, this) && accessibilityService.instance != null) {
                 accessibilityService.instance.closeNotifications();
-                Handler handler = new Handler();
+                Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> accessibilityService.instance.takeScreenshotsLocal(), 1000);
             } else {
                 Toast.makeText(this, "Accessibility service is not enabled", Toast.LENGTH_SHORT).show();
